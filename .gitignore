@@ -23,4 +23,4 @@ pytest_junit.xml
 cdk.out
 
 # GCP credential
-edgarai-dev.json
+edgar-ai-dev.json

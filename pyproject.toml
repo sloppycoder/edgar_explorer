@@ -6,6 +6,10 @@ authors = [{ name = "Li Lin", email = "guru.lin@gmail.com" }]
 readme = "README.md"
 requires-python = ">= 3.12"
 dependencies = [
+    "bootstrap-flask>=2.4.1",
+    "flask-wtf>=1.2.2",
+    "flask>=3.1.0",
+    "gunicorn>=23.0.0",
     "python-dotenv >= 1.0.1",
 ]
 [dependency-groups]
