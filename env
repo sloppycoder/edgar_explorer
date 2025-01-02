@@ -1,0 +1,6 @@
+
+DATABASE_URL=asyncpg://username:password@server:port/database
+# TEST_DATABASE_URL=asyncpg://username:password@server:port/database_test
+# KEEP_TEST_DB=N
+
+
