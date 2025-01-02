@@ -8,5 +8,7 @@
 !requirements*.txt
 !requirements*.lock
 !*.py
-!migrations/
-!gui
+!templates/
+!static/
+!llogger_config.json
+!app/
