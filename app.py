@@ -1,17 +1,12 @@
-import json
-import logging
-import logging.config
-from pathlib import Path
-
 from dotenv import load_dotenv
 from flask import Flask, render_template
 from flask_bootstrap import Bootstrap5
 
+from gcp_helper import setup_cloud_logging
+
 load_dotenv()
 
-with open(Path(__file__).parent / "logger_config.json", "r") as f:
-    logging.config.dictConfig(json.load(f))
-
+setup_cloud_logging()
 
 app = Flask(__name__)
 bootstrap = Bootstrap5(app)
