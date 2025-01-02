@@ -6,7 +6,6 @@
 
 !entrypoint.sh
 !requirements*.txt
-!*.py
-!templates/
-!static/
-!app/
+!manage.py
+!edgarui/
+!trustee/

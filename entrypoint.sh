@@ -6,4 +6,6 @@ if [ -f ".env" ]; then
     source .env
 fi
 
-gunicorn --workers 2 --bind 0.0.0.0:5000 app:app
+python manage.py migrate
+
+gunicorn --workers 2 --bind 0.0.0.0:5000 edgarui.wsgi:application

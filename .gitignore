@@ -24,3 +24,7 @@ cdk.out
 
 # GCP credential
 edgar-ai-dev.json
+
+# app specifi data and log
+*.db
+*.log
