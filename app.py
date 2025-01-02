@@ -20,3 +20,8 @@ bootstrap = Bootstrap5(app)
 @app.route("/")
 def index():
     return render_template("index.html")
+
+
+@app.route("/ready")
+def ready():
+    return "yes"
