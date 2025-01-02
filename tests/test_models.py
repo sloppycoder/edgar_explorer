@@ -1,5 +1,0 @@
-from gui import models as m
-
-async def test_query_models(test_db):
-    user = await m.User.filter(login_name="root").first()
-    assert user.id == 1 # pyright: ignore

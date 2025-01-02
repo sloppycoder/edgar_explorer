@@ -7,8 +7,6 @@ readme = "README.md"
 requires-python = ">= 3.12"
 dependencies = [
     "python-dotenv >= 1.0.1",
-    "tortoise-orm>=0.22.2",
-    "aerich>=0.8.0",
 ]
 [dependency-groups]
 dev = [
@@ -16,7 +14,6 @@ dev = [
     "pytest-dotenv >= 0.5.2",
     "pytest-mock >= 3.14",
     "pytest-cov >= 6.0",
-    "pytest-asyncio>=0.24.0",
     "pre-commit >= 4.0.1",
     "ruff >= 0.8.2",
     "pyright >= 1.1.139",
@@ -33,8 +30,6 @@ filterwarnings = [
     "ignore::DeprecationWarning",
 ]
 env_files = [".env"]
-asyncio_mode = "auto"
-asyncio_default_fixture_loop_scope = "function"
 
 [tool.coverage.run]
 source = ["."]

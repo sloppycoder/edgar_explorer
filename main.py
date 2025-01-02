@@ -2,11 +2,9 @@ import json
 import logging
 import logging.config
 import os
-from decimal import Decimal
 from pathlib import Path
+
 from dotenv import load_dotenv
-
-
 
 load_dotenv()
 
@@ -24,6 +22,4 @@ TORTOISE_ORM = {
 }
 
 if __name__ == "__main__":
-
     print("Hello gui")
-
