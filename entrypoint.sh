@@ -6,4 +6,4 @@ if [ -f ".env" ]; then
     source .env
 fi
 
-gunicorn --workers 2 --bind 0.0.0.0 app:app
+gunicorn --workers 2 --bind 0.0.0.0:5000 app:app
