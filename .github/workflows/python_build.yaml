@@ -59,7 +59,7 @@ jobs:
     - name: Unit tests
       id: unit_tests
       run: |
-        uv run pytest -v -s --cov --cov-report=html
+        uv run pytest -v
 
         if [[ -f "htmlcov/index.html" ]]; then
           echo "coverage_report=yes" >> $GITHUB_OUTPUT
