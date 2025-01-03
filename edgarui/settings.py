@@ -6,7 +6,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 devkey = "django-insecure-n%*4w3x+b!=709@2jj_=6soqd4afl+#)666hi_fb+tn3&%t(xa"
 SECRET_KEY = os.environ.get("SECRET_KEY", devkey)
-DEBUG = False if os.getenv("K_SERVICE") else True # K_SERVICE is set by Cloud Run
+# DEBUG = False if os.getenv("K_SERVICE") else True # K_SERVICE is set by Cloud Run
+DEBUG = False
 ALLOWED_HOSTS = ['.localhost', '127.0.0.1', '.run.app']
 
 # Configure logging
@@ -121,5 +122,6 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"

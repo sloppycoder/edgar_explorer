@@ -6,7 +6,7 @@ if [ -f ".env" ]; then
     source .env
 fi
 
-
+python manage.py collectstatic --no-input
 python manage.py migrate
 python manage.py initapp
 
