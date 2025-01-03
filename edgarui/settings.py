@@ -27,7 +27,7 @@ LOGGING = {
         "formatters": {
             "standard": {
                 "format": "[%(levelname)s] %(message)s",
-                "datefmt": "%Y-%m-%d %H:%M:%S %z"
+                "datefmt": "%Y-%m-%d %H:%M:%S %z",
             }
         }
     },
@@ -68,6 +68,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "trustee",
     "django_tables2",
+    "allauth",
+    "allauth.account",
 ]
 
 MIDDLEWARE = [
@@ -79,6 +81,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "edgarui.urls"
@@ -94,6 +97,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "django.template.context_processors.request",
             ],
         },
     },
@@ -127,6 +131,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
+
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
@@ -135,3 +144,4 @@ STATIC_URL = "static/"
 STATIC_ROOT = WORK_DIR / "staticfiles"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+ACCOUNT_ADAPTER = "edgarui.adapters.NoSignupAdapter"

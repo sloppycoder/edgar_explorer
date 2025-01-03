@@ -13,6 +13,7 @@ dependencies = [
     "whitenoise>=6.8.2",
     "google-cloud-bigquery>=3.27.0",
     "django-tables2>=2.7.5",
+    "django-allauth>=65.3.1",
 ]
 [dependency-groups]
 dev = [

@@ -1,4 +1,5 @@
 import django_tables2 as tables
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.http import JsonResponse
 from django.utils.html import format_html
@@ -59,7 +60,7 @@ class FilingsTable(tables.Table):
         orderable = False
 
 
-class FilingsListView(SingleTableView):
+class FilingsListView(LoginRequiredMixin, SingleTableView):
     model = Filing
     table_class = FilingsTable
     template_name = "filings_list.html"
