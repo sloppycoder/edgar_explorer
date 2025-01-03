@@ -1,4 +1,6 @@
 # load data from BigQuery into the models
+import logging
+
 from google.cloud import bigquery
 
 
@@ -16,24 +18,34 @@ def query_to_model(model, query: str) -> None:
         job.result()
 
         for row in job:
-            obj = model.objects.create(**dict(row))
+            row_dict = dict(row)
+            # print(row_dict)
+            obj = model.objects.create(**row_dict)
             obj.save()
 
 
 def load_filing_entries(sender, **kwargs):
     from .models import Filing
 
+    logging.info("Loading data from BigQuery...")
+
     # load data from BigQuery into Filing models
     dataset_id = sender.config["dataset_id"]
     query = f"""
         SELECT
-            cik,
+            idx.cik,
             company_name,
             form_type,
             date_filed,
             filename,
-            accession_number
-        FROM {dataset_id}.master_idx_sample
+            idx.accession_number,
+            '12,34' as chunks_used,
+            res.n_trustee as num_trustees,
+            res.json_text as trustees_comp
+        FROM `{dataset_id}.master_idx_sample` idx
+        LEFT JOIN `{dataset_id}.trustee_comp_results` res
+        ON res.cik = idx.cik
+        AND res.accession_number = idx.accession_number
         LIMIT 10000
         """
     query_to_model(Filing, query)

@@ -12,3 +12,8 @@ class Filing(models.Model):
     date_filed = models.CharField(max_length=10, verbose_name="Date Filed")
     filename = models.CharField(max_length=100, verbose_name="EDGAR file name")
     accession_number = models.CharField(max_length=20, verbose_name="Accession Number")
+    chunks_used = models.CharField(max_length=100, verbose_name="Chunks", null=True)
+    num_trustees = models.IntegerField(verbose_name="Trustees", null=True)
+    trustees_comp = models.CharField(
+        max_length=4096, verbose_name="Trustees Compensation", null=True
+    )

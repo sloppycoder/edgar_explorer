@@ -19,7 +19,14 @@ class FilingsTable(tables.Table):
     class Meta:
         model = Filing
         template_name = "django_tables2/bootstrap5.html"
-        fields = ("cik", "company_name", "date_filed", "accession_number")
+        fields = (
+            "cik",
+            "company_name",
+            "date_filed",
+            "chunks_used",
+            "num_trustees",
+            "accession_number",
+        )
         attrs = {"class": "table table-striped"}
         orderable = False
 
@@ -32,23 +39,23 @@ class FilingsListView(SingleTableView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        sort_order = ["cik", "-date_filed"]
 
         search_term = self.request.GET.get("q")
-        if not search_term or len(search_term) < 4:
-            return queryset.none()
-
-        if search_term.isdigit():
+        if not search_term:
+            queryset = queryset.all().order_by(*sort_order)[:1000]
+        elif search_term.isdigit():
             queryset = queryset.filter(
                 Q(cik__icontains=search_term),
-            ).order_by("-date_filed")
+            ).order_by(*sort_order)
         elif len(search_term) == 20:
             queryset = queryset.filter(
                 Q(accession_number=search_term),
-            ).order_by("-date_filed")
+            ).order_by(*sort_order)
         else:
             queryset = queryset.filter(
                 Q(company_name__icontains=search_term),
-            ).order_by("-date_filed")
+            ).order_by(*sort_order)
 
         return queryset
 
