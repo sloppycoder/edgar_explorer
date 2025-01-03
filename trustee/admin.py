@@ -1,10 +1,10 @@
 from django.contrib import admin
 
-from .models import FilingIndexEntry
+from .models import Filing
 
 
-@admin.register(FilingIndexEntry)
-class FilingIndexEntryAdmin(admin.ModelAdmin):
+@admin.register(Filing)
+class FilingAdmin(admin.ModelAdmin):
     list_display = (
         "cik",
         "company_name",

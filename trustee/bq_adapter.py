@@ -21,9 +21,9 @@ def query_to_model(model, query: str) -> None:
 
 
 def load_filing_entries(sender, **kwargs):
-    from .models import FilingIndexEntry
+    from .models import Filing
 
-    # load data from BigQuery into FilingIndexEntry models
+    # load data from BigQuery into Filing models
     dataset_id = sender.config["dataset_id"]
     query = f"""
         SELECT
@@ -36,4 +36,4 @@ def load_filing_entries(sender, **kwargs):
         FROM {dataset_id}.master_idx_sample
         LIMIT 10000
         """
-    query_to_model(FilingIndexEntry, query)
+    query_to_model(Filing, query)
