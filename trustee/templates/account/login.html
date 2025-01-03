@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header text-center">
+                    <h4>Sign In</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'account_login' %}">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        {% if redirect_field_value %}
+                        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                        {% endif %}
+                        <button class="btn btn-primary w-100 mt-3" type="submit">
+                            Sign In
+                        </button>
+                    </form>
+                </div>
+                <div class="card-footer text-center">
+                    <p>Unauthorized access strictly forbidden</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
