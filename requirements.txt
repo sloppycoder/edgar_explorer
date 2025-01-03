@@ -11,6 +11,10 @@ charset-normalizer==3.4.1
 deprecated==1.2.15
     # via opentelemetry-api
 django==5.1.4
+    # via
+    #   gui (pyproject.toml)
+    #   django-tables2
+django-tables2==2.7.5
     # via gui (pyproject.toml)
 google-api-core==2.24.0
     # via
