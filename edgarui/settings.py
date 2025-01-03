@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 devkey = "django-insecure-n%*4w3x+b!=709@2jj_=6soqd4afl+#)666hi_fb+tn3&%t(xa"
@@ -10,8 +11,8 @@ ALLOWED_HOSTS = [".localhost", "127.0.0.1", ".run.app"]
 CSRF_TRUSTED_ORIGINS = ".run.app"
 DEBUG = os.getenv("DEBUG", "0") == "1"
 
-# below 2 lines check if the app is running in Cloud Run then set different values
-# DEBUG = not os.getenv("K_SERVICE") and os.environ.get("DEBUG", "false").lower() == "true"
+# in Cloud Run, the current directory is read-only, so we need to
+# use another directory for database and staticfiles
 WORK_DIR = Path("/tmp") if os.environ.get("K_SERVICE") else BASE_DIR
 
 # Configure logging
