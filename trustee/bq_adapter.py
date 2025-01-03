@@ -48,4 +48,6 @@ def load_filing_entries(sender, **kwargs):
         AND res.accession_number = idx.accession_number
         LIMIT 10000
         """
+    logging.info("Calling query_to_model")
     query_to_model(Filing, query)
+    logging.info("Done query_to_model")
