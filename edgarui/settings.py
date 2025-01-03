@@ -144,4 +144,7 @@ STATIC_URL = "static/"
 STATIC_ROOT = WORK_DIR / "staticfiles"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+# Allauth settings
 ACCOUNT_ADAPTER = "edgarui.adapters.NoSignupAdapter"
+ACCOUNT_LOGOUT_ON_GET = True
