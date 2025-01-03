@@ -30,3 +30,4 @@ edgar-ai-*.json
 *.log
 staticfiles/
 *.jsonl
+t

@@ -63,7 +63,7 @@ class FilingsTable(tables.Table):
 class FilingsListView(LoginRequiredMixin, SingleTableView):
     model = Filing
     table_class = FilingsTable
-    template_name = "filings_list.html"
+    template_name = "trustee/filings_list.html"
     paginate_by = PAGE_SIZE
 
     def get_queryset(self):
@@ -83,7 +83,7 @@ class FilingsListView(LoginRequiredMixin, SingleTableView):
             ).order_by(*sort_order)
         else:
             queryset = queryset.filter(
-                Q(company_name__icontains=search_term),
+                Q(company_name__icontains=search_term.upper()),
             ).order_by(*sort_order)
 
         return queryset
