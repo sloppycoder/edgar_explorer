@@ -1,9 +1,6 @@
 import os
 
 from django.apps import AppConfig
-from django.db.models.signals import post_migrate
-
-from .bq_adapter import load_filing_entries
 
 
 class TrusteeConfig(AppConfig):
@@ -13,6 +10,3 @@ class TrusteeConfig(AppConfig):
     config = {
         "dataset_id": os.environ.get("DATASET_ID", "edgar"),
     }
-
-    def ready(self):
-        post_migrate.connect(load_filing_entries, sender=self)

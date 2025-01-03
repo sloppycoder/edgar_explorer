@@ -19,13 +19,12 @@ def query_to_model(model, query: str) -> int:
         logging.info(f"Loaded {len(models)} rows into {model.__name__}")
 
 
-def load_filing_entries(sender, **kwargs):
+def load_filing_entries(dataset_id, **kwargs):
     from .models import Filing
 
     logging.info("Loading data from BigQuery...")
 
     # load data from BigQuery into Filing models
-    dataset_id = sender.config["dataset_id"]
     query = f"""
         SELECT DISTINCT
             idx.cik,
@@ -34,7 +33,7 @@ def load_filing_entries(sender, **kwargs):
             date_filed,
             filename,
             idx.accession_number,
-            '12,34' as chunks_used,
+            res.chunk_nums as chunks_used,
             res.n_trustee as num_trustees,
             res.json_text as trustees_comp
         FROM `{dataset_id}.master_idx_sample` idx

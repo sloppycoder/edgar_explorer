@@ -12,6 +12,7 @@ class Command(BaseCommand):
         admin_username = os.environ.get("ADMIN_USERNAME", "admin")
         admin_password = os.environ.get("ADMIN_PASSWORD", "admin")
         self.create_user(admin_username, admin_password)
+        self.load_initial_data()
 
     def create_user(self, username, password):
         user = get_user_model()
@@ -23,3 +24,10 @@ class Command(BaseCommand):
             print(f"{username} user created")
         except IntegrityError as e:
             print(f"Can't create user {username}, {e}")
+
+    def load_initial_data(self):
+        from trustee.apps import TrusteeConfig
+        from trustee.bq_adapter import load_filing_entries
+
+        dateset_id = TrusteeConfig.config["dataset_id"]
+        load_filing_entries(dateset_id)
