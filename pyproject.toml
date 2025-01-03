@@ -11,6 +11,7 @@ dependencies = [
     "django>=5.1.4",
     "gunicorn>=23.0.0",
     "whitenoise>=6.8.2",
+    "google-cloud-bigquery>=3.27.0",
 ]
 [dependency-groups]
 dev = [
@@ -31,6 +32,7 @@ managed = true
 minversion = "6.0"
 testpaths = ["tests"]
 pythonpath = ["."]
+DJANGO_SETTINGS_MODULE = "edgarui.settings"
 filterwarnings = [
     "ignore::DeprecationWarning",
 ]
