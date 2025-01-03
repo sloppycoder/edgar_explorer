@@ -15,4 +15,53 @@
 
 {% render_table table %}
 
+<div class="modal fade" id="trusteeModal" tabindex="-1" aria-labelledby="trusteeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg"> <!-- Use modal-lg for larger width -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="trusteeModalLabel">Trustee Information</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="trusteeModalBody">
+                <!-- JSON content will appear here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var modal = document.getElementById('trusteeModal');
+        modal.addEventListener('show.bs.modal', function (event) {
+            // Get the link that triggered the modal
+            var link = event.relatedTarget;
+
+            // Extract data from the link's data attribute
+            var trusteeData = link.getAttribute('data-trustee');
+
+            try {
+                // Parse the JSON string into an object
+                var parsedData = JSON.parse(trusteeData);
+
+                // Format the JSON object as a pretty-printed string
+                var formattedData = JSON.stringify(parsedData, null, 2);
+
+                // Update the modal body content with formatted JSON
+                var modalBody = modal.querySelector('#trusteeModalBody');
+                modalBody.textContent = formattedData;
+
+                // Optionally, style the text as code
+                modalBody.style.fontFamily = 'monospace';
+                modalBody.style.whiteSpace = 'pre-wrap';
+            } catch (error) {
+                // Handle errors if the JSON string is invalid
+                console.error("Invalid JSON string:", error);
+                modalBody.textContent = "Invalid JSON data.";
+            }
+        });
+    });
+</script>
 {% endblock %}

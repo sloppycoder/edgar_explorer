@@ -1,6 +1,9 @@
+import json
+
 import django_tables2 as tables
 from django.db.models import Q
 from django.http import JsonResponse
+from django.utils.html import format_html
 from django_tables2 import SingleTableView
 
 from .models import Filing
@@ -29,6 +32,14 @@ class FilingsTable(tables.Table):
         )
         attrs = {"class": "table table-striped"}
         orderable = False
+
+    def render_num_trustees(self, value, record):
+        # Use record to fetch `trustees_comp` and pass it as a data attribute
+        return format_html(
+            '<a href="#" class="trustee-link" data-bs-toggle="modal"'
+            + f'data-bs-target="#trusteeModal" data-trustee="{{}}">{value}</a>',
+            record.trustees_comp,
+        )
 
 
 class FilingsListView(SingleTableView):
@@ -66,3 +77,12 @@ def readiness_check(request):
 
 def health_check(request):
     return JsonResponse({"status": "ok"})
+
+
+def format_json(json_text: str):
+    try:
+        obj = json.loads(json_text)
+        return json.dumps(obj, indent=4)
+    except AttributeError:
+        print("Error: input cannot be parsed as JSON")
+        return json_text
