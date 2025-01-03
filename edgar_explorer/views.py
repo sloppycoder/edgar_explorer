@@ -75,7 +75,7 @@ class FilingsListView(LoginRequiredMixin, SingleTableView):
             queryset = queryset.all().order_by(*sort_order)[:1000]
         elif search_term.isdigit():
             queryset = queryset.filter(
-                Q(cik__icontains=search_term),
+                Q(cik__contains=search_term),
             ).order_by(*sort_order)
         elif len(search_term) == 20:
             queryset = queryset.filter(
@@ -83,7 +83,7 @@ class FilingsListView(LoginRequiredMixin, SingleTableView):
             ).order_by(*sort_order)
         else:
             queryset = queryset.filter(
-                Q(company_name__icontains=search_term.upper()),
+                Q(company_name__icontains=search_term),
             ).order_by(*sort_order)
 
         return queryset
