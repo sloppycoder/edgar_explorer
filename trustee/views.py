@@ -1,5 +1,3 @@
-import json
-
 import django_tables2 as tables
 from django.db.models import Q
 from django.http import JsonResponse
@@ -19,6 +17,33 @@ class TruncatedTextColumn(tables.Column):
 class FilingsTable(tables.Table):
     company_name = TruncatedTextColumn(verbose_name="Company Name")
 
+    # this somehow doesn't work...
+    # def render_company_name(self, value, _):
+    #     if value:
+    #         return value[:20] + "..." if len(value) > 20 else value
+    #     return "N/A"
+
+    def render_num_trustees(self, value, record):
+        # Use record to fetch `trustees_comp` and pass it as a data attribute
+        return format_html(
+            '<a href="#" class="trustee-link" data-bs-toggle="modal"'
+            + f'data-bs-target="#trusteeModal" data-trustee="{{}}">{value}</a>',
+            record.trustees_comp,
+        )
+
+    def render_accession_number(self, value, record):
+        # navigate to the SEC page for the filing
+        # filename: edgar/data/105563/0001683863-24-001950.txt
+        # URL path edgar/data/105563/000168386324001950/0001683863-24-001950-index.html
+        # this logic may not work for older filings, e.g. pre 2004
+        parts = record.filename.replace(".txt", "-index.html").split("/")
+        parts.insert(len(parts) - 1, value.replace("-", ""))
+        path = "/".join(parts)
+        return format_html(
+            f'<a href="https://www.sec.gov/Archives/{path}" target="_blank">{value}</a>',
+            value,
+        )
+
     class Meta:
         model = Filing
         template_name = "django_tables2/bootstrap5.html"
@@ -32,14 +57,6 @@ class FilingsTable(tables.Table):
         )
         attrs = {"class": "table table-striped"}
         orderable = False
-
-    def render_num_trustees(self, value, record):
-        # Use record to fetch `trustees_comp` and pass it as a data attribute
-        return format_html(
-            '<a href="#" class="trustee-link" data-bs-toggle="modal"'
-            + f'data-bs-target="#trusteeModal" data-trustee="{{}}">{value}</a>',
-            record.trustees_comp,
-        )
 
 
 class FilingsListView(SingleTableView):
@@ -77,12 +94,3 @@ def readiness_check(request):
 
 def health_check(request):
     return JsonResponse({"status": "ok"})
-
-
-def format_json(json_text: str):
-    try:
-        obj = json.loads(json_text)
-        return json.dumps(obj, indent=4)
-    except AttributeError:
-        print("Error: input cannot be parsed as JSON")
-        return json_text
