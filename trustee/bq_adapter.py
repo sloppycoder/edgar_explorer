@@ -32,7 +32,7 @@ def load_filing_entries(sender, **kwargs):
     # load data from BigQuery into Filing models
     dataset_id = sender.config["dataset_id"]
     query = f"""
-        SELECT
+        SELECT DISTINCT
             idx.cik,
             company_name,
             form_type,
