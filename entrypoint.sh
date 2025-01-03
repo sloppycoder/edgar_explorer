@@ -10,4 +10,4 @@ fi
 python manage.py migrate
 python manage.py initapp
 
-gunicorn --workers 2 --bind 0.0.0.0:5000 edgarui.wsgi:application
+gunicorn --workers 2 --bind 0.0.0.0:8000 edgarui.wsgi:application

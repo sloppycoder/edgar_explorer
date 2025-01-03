@@ -88,6 +88,8 @@ sqlparse==0.5.3
     # via django
 urllib3==2.3.0
     # via requests
+whitenoise==6.8.2
+    # via gui (pyproject.toml)
 wrapt==1.17.0
     # via deprecated
 zipp==3.21.0

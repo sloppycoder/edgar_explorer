@@ -10,6 +10,7 @@ dependencies = [
     "google-cloud-logging>=3.11.3",
     "django>=5.1.4",
     "gunicorn>=23.0.0",
+    "whitenoise>=6.8.2",
 ]
 [dependency-groups]
 dev = [

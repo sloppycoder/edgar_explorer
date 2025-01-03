@@ -6,7 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 devkey = "django-insecure-n%*4w3x+b!=709@2jj_=6soqd4afl+#)666hi_fb+tn3&%t(xa"
 SECRET_KEY = os.environ.get("SECRET_KEY", devkey)
-DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
+DEBUG = False if os.getenv("K_SERVICE") else True # K_SERVICE is set by Cloud Run
 ALLOWED_HOSTS = ['.localhost', '127.0.0.1', '.run.app']
 
 # Configure logging
@@ -67,6 +67,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = "edgarui.urls"
@@ -121,3 +122,4 @@ USE_I18N = True
 USE_TZ = True
 STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
