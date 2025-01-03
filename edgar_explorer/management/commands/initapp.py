@@ -26,8 +26,8 @@ class Command(BaseCommand):
             print(f"Can't create user {username}, {e}")
 
     def load_initial_data(self):
-        from trustee.apps import TrusteeConfig
-        from trustee.bq_adapter import load_filing_entries
+        from edgar_explorer.apps import FilingExplorerConfig
+        from edgar_explorer.bq_adapter import load_filing_entries
 
-        dateset_id = TrusteeConfig.config["dataset_id"]
+        dateset_id = FilingExplorerConfig.config["dataset_id"]
         load_filing_entries(dateset_id)

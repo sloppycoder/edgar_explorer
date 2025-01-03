@@ -4,8 +4,6 @@ from django.urls import path
 
 from . import views
 
-app_name = "trustee"
-
 urlpatterns = [
     path("", views.FilingsListView.as_view(), name="listing"),
     # below are probes for K8S

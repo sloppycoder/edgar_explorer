@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "trustee",
+    "edgar_explorer",
     "django_tables2",
     "allauth",
     "allauth.account",
