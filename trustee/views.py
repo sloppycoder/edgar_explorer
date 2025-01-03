@@ -7,7 +7,7 @@ from django_tables2 import SingleTableView
 
 from .models import Filing
 
-PAGE_SIZE = 15
+PAGE_SIZE = 10
 
 
 class TruncatedTextColumn(tables.Column):
