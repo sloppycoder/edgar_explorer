@@ -7,9 +7,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 devkey = "django-insecure-n%*4w3x+b!=709@2jj_=6soqd4afl+#)666hi_fb+tn3&%t(xa"
 SECRET_KEY = os.environ.get("SECRET_KEY", devkey)
 ALLOWED_HOSTS = ['.localhost', '127.0.0.1', '.run.app']
+DEBUG = os.getenv("DEBUG", "0") == "1"
 
 # below 2 lines check if the app is running in Cloud Run then set different values
-DEBUG = not os.getenv("K_SERVICE") and os.environ.get("DEBUG", "false").lower() == "true"
+# DEBUG = not os.getenv("K_SERVICE") and os.environ.get("DEBUG", "false").lower() == "true"
 WORK_DIR = Path("/tmp") if os.environ.get("K_SERVICE") else BASE_DIR
 
 # Configure logging
