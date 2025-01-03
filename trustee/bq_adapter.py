@@ -4,7 +4,7 @@ import logging
 from google.cloud import bigquery
 
 
-def query_to_model(model, query: str) -> None:
+def query_to_model(model, query: str) -> int:
     """
     Load data from BigQuery into a Django model.
 
@@ -15,13 +15,8 @@ def query_to_model(model, query: str) -> None:
     # Get the BigQuery client
     with bigquery.Client() as bq_client:
         job = bq_client.query(query)
-        job.result()
-
-        for row in job:
-            row_dict = dict(row)
-            # print(row_dict)
-            obj = model.objects.create(**row_dict)
-            obj.save()
+        models = [model.objects.create(**dict(row)) for row in job]
+        logging.info(f"Loaded {len(models)} rows into {model.__name__}")
 
 
 def load_filing_entries(sender, **kwargs):
