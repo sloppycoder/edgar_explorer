@@ -9,6 +9,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", devkey)
 # DEBUG = False if os.getenv("K_SERVICE") else True # K_SERVICE is set by Cloud Run
 DEBUG = False
 ALLOWED_HOSTS = ['.localhost', '127.0.0.1', '.run.app']
+WRITABLE_PATH = Path("/tmp") if os.environ.get("K_SERVICE") else BASE_DIR
 
 # Configure logging
 LOGGING = {
@@ -95,7 +96,7 @@ WSGI_APPLICATION = "edgarui.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "edgarui.db",
+        "NAME": WRITABLE_PATH / "edgarui.db",
     }
 }
 
@@ -122,6 +123,6 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 STATIC_URL = "static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = WRITABLE_PATH / "staticfiles"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
