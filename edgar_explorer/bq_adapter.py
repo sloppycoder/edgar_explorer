@@ -34,8 +34,9 @@ def load_filing_entries(dataset_id, **kwargs):
             filename,
             idx.accession_number,
             res.chunk_nums as chunks_used,
+            res.relevant_text as relevant_text,
             res.n_trustee as num_trustees,
-            res.json_text as trustees_comp
+            res.model_response as trustees_comp
         FROM `{dataset_id}.master_idx_sample` idx
         LEFT JOIN `{dataset_id}.trustee_comp_results` res
         ON res.cik = idx.cik

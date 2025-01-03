@@ -1,3 +1,5 @@
+import json
+
 import django_tables2 as tables
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
@@ -25,12 +27,28 @@ class FilingsTable(tables.Table):
     #     return "N/A"
 
     def render_num_trustees(self, value, record):
-        # Use record to fetch `trustees_comp` and pass it as a data attribute
         return format_html(
-            '<a href="#" class="trustee-link" data-bs-toggle="modal"'
-            + f'data-bs-target="#trusteeModal" data-trustee="{{}}">{value}</a>',
+            '<a href="#" data-bs-toggle="modal"  data-type="trustee"'
+            + f'data-bs-target="#genericModal" data-info="{{}}">{value}</a>',
             record.trustees_comp,
         )
+
+    def render_chunks_used(self, value, record):
+        data = json.dumps(
+            {
+                "chunk_nums": value,
+                "relevant_text": record.relevant_text,
+            }
+        )
+        return format_html(
+            '<a href="#" data-bs-toggle="modal"  data-type="chunk"'
+            + f'data-bs-target="#genericModal" data-info="{{}}">{value}</a>',
+            data,
+        )
+
+    # <a href="#" data-bs-toggle="modal" data-bs-target="#genericModal"
+    # data-type="trustee" data-info='{"trustees": [...], "notes": "Trustee notes here."}'>
+    # 1</a>
 
     def render_accession_number(self, value, record):
         # navigate to the SEC page for the filing
