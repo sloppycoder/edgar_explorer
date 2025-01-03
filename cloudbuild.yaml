@@ -22,7 +22,7 @@ steps:
       - 'managed'
       - '--allow-unauthenticated'
       - '--update-secrets'
-      - 'GOOGLE_APPLICATION_CREDENTIALS_JSON=projects/$PROJECT_ID/secrets/edgar-ui-user-key/versions/latest \
+      - 'GOOGLE_APPLICATION_CREDENTIALS_JSON=projects/$PROJECT_ID/secrets/edgar-ui-user-key/versions/latest'
       - '--update-secrets'
       - 'JSON_SECRET=projects/$PROJECT_ID/secrets/edgar-ui-config/versions/latest'
       - '--set-env-vars'
