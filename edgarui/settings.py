@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 devkey = "django-insecure-n%*4w3x+b!=709@2jj_=6soqd4afl+#)666hi_fb+tn3&%t(xa"
 SECRET_KEY = os.environ.get("SECRET_KEY", devkey)
 ALLOWED_HOSTS = [".localhost", "127.0.0.1", ".run.app"]
-CSRF_TRUSTED_ORIGINS = "https://*.run.app"
+CSRF_TRUSTED_ORIGINS = "https://edgarui-1049830028293.us-central1.run.app"
 DEBUG = os.getenv("DEBUG", "0") == "1"
 
 # in Cloud Run, the current directory is read-only, so we need to
