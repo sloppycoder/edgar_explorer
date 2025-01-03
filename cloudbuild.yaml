@@ -7,7 +7,28 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/$PROJECT_ID/edgar-explorer']
 
-  # Step 3: Deploy to Cloud Run with secrets and environment variables
+  # Step 3: Get secret from Secret Manager and set corresponding ENV VAR
+  - name: 'google/cloud-sdk'  # Uses the Cloud SDK to access Secret Manager
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "Fetching secret from Secret Manager..."
+        gcloud secrets versions access latest --secret=edgar-ui-user-key > /workspace/secret.json
+
+  # Step 4: Set ENV VAR using keys in secret
+  - name: 'ubuntu'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        export ADMIN_USERNAME=$(jq -r '.admin_username' /workspace/secret.json)
+        export ADMIN_PASSWORD=$(jq -r '.admin_password' /workspace/secret.json)
+        export DATASETID=$(jq -r '.dataset_id' /workspace/secret.json)
+        export SECRET_KEY=$(jq -r '.secret_key' /workspace/secret.json)
+        export DEBUG=$(jq -r '.debug' /workspace/secret.json)
+
+  # Step 5: Deploy to Cloud Run with secrets and environment variables
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -24,9 +45,8 @@ steps:
       - '--update-secrets'
       - 'GOOGLE_APPLICATION_CREDENTIALS_JSON=projects/$PROJECT_ID/secrets/edgar-ui-user-key/versions/latest'
       - '--update-secrets'
-      - 'JSON_SECRET=projects/$PROJECT_ID/secrets/edgar-ui-config/versions/latest'
       - '--set-env-vars'
-      - 'ADMIN_USERNAME=$(printf $${JSON_SECRET} | jq -r ".admin_username"),ADMIN_PASSWORD=$(printf $${JSON_SECRET} | jq -r ".admin_password"),DATASET_ID=$(printf $${JSON_SECRET} | jq -r ".dataset_id"),SECRET_KEY=$(printf $${JSON_SECRET} | jq -r ".secret_key").DEBUG=0'
+      - 'ADMIN_USERNAME=$ADMIN_USERNAME,ADMIN_PASSWORD=$ADMIN_PASSWORD,DATASET_ID=$DATASET_ID,SECRET_KEY=$DATASET_ID,DEBUG=$DEBUG'
 
 images:
   - 'gcr.io/$PROJECT_ID/edgar-explorer'
