@@ -28,7 +28,7 @@ steps:
       - '8000'
       - '--update-secrets'
       - 'GOOGLE_APPLICATION_CREDENTIALS_JSON=edgar-ui-user-key'
-      - '-update-secrets'
+      - '--update-secrets'
       - '/secrets/app_config=edgar-ui-config'
 
 images:
