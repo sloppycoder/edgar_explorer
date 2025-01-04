@@ -3,7 +3,14 @@
 
 ## deploy to Google Cloud Run
 
+Use Google Cloud Console. I can't figure out what's the command line equivalent.
+
+The steps below may or may not work for you.
+
 ```shell
+
+# connect github repo with Cloud Build
+# browse to https://console.cloud.google.com/cloud-build/triggers;region=global/connect?project=YOUR_PROJECT_ID
 
 # create Cloud Build trigger
 gcloud builds triggers create github \
@@ -14,16 +21,3 @@ gcloud builds triggers create github \
     --build-config="cloudbuild.yaml"
 
 ```
-The gcloud command will provide a URL in the output, asking you to install the Google Cloud Build GitHub App to your GitHub organization or user account.
-
-```text
-
-You need to install the Cloud Build GitHub App on your GitHub account.
-Please visit this URL: https://github.com/apps/google-cloud-build/installations/new
-```
-
-Follow the instruction and open the URL:
-* Open the URL provided in the output (e.g., https://github.com/apps/google-cloud-build/installations/new).
-* Select the GitHub organization or account
-* Choose the repository (your-github-repo-name) you want to link
-* Complete the installation
