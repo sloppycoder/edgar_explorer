@@ -3,28 +3,28 @@ options:
 
 steps:
   # Step 1: Build the Docker image
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/edgar-explorer', '.']
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["build", "-t", "gcr.io/$PROJECT_ID/edgar-explorer", "."]
 
   # Step 2: Push the Docker image to Google Container Registry (GCR)
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/edgar-explorer']
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "gcr.io/$PROJECT_ID/edgar-explorer"]
 
   # Step 3: Deploy to Cloud Run with secrets and environment variables
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: gcloud
     args:
-      - 'run'
-      - 'deploy'
-      - 'edgar-explorer'
-      - '--image=gcr.io/$PROJECT_ID/edgar-explorer'
-      - '--region=us-central1'
-      - '--platform=managed'
-      - '--allow-unauthenticated'
-      - '--port=8000'
-      - '--update-secrets=GOOGLE_APPLICATION_CREDENTIALS_JSON=edgar-ui-user-key:latest'
-      - '--update-secrets=/secrets/app_config.env=edgar-ui-config:latest'
-      - '--set-env-vars=DATASET_ID=edgar2,DEBUG=0'
+      - "run"
+      - "deploy"
+      - "edgar-explorer"
+      - "--image=gcr.io/$PROJECT_ID/edgar-explorer"
+      - "--region=us-central1"
+      - "--platform=managed"
+      - "--allow-unauthenticated"
+      - "--port=8000"
+      - "--update-secrets=GOOGLE_APPLICATION_CREDENTIALS_JSON=edgar-ui-user-key:latest"
+      - "--update-secrets=/secrets/app_config.env=edgar-ui-config:latest"
+      - "--set-env-vars=DATASET_ID=edgar2,DEBUG=0"
 
 images:
-  - 'gcr.io/$PROJECT_ID/edgar-explorer'
+  - "gcr.io/$PROJECT_ID/edgar-explorer"
