@@ -45,7 +45,7 @@ steps:
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated'
-      - '--port
+      - '--port'
       - '8000'
       - '--update-secrets'
       - 'GOOGLE_APPLICATION_CREDENTIALS_JSON=edgar-ui-user-key:latest'
