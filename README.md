@@ -9,16 +9,18 @@ The steps below may or may not work for you.
 
 ```shell
 
-# connect github repo with Cloud Build
-# browse to https://console.cloud.google.com/cloud-build/triggers;region=global/connect?project=YOUR_PROJECT_ID
+# Go to Cloud Build Console  and manually create a repository there
+# linked to a Github repository. Make sure the use the 2nd gen repository.
 
-# create Cloud Build trigger
-gcloud builds triggers create github \
-    --name="trigger-edgar-explorer" \
-    --repo-name="edgar-explorer" \
-    --repo-owner="<your_github_id>" \
+# create Cloud Build trigger (2nd gen)
+gcloud beta builds triggers create github \
+    --service-account="<server_account_email>" \
+    --name=trigger-edgar-explorer \
+    --repository=<repo_connected_in_prev_step> \
+    --region=us-central1 \
     --branch-pattern="^develop$" \
-    --build-config="cloudbuild.yaml"
+    --build-config=cloudbuild.yaml
+
 
 # check the URL of the service
 gcloud run services describe edgar-explorer --region us-central1 --format json | jq -r ".status.url"

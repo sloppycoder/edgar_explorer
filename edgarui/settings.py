@@ -6,9 +6,11 @@ from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# when running in Cloud Run, the filesystem of the application is read-only
+# so loading .env from current directory won't work.
+# So we mount the secret, which contains an env file, in a fixed path
 secret_mounted_env = "/secrets/app_config.env"
 if os.path.exists(secret_mounted_env) and os.access(secret_mounted_env, os.R_OK):
-    # running in Cloud Run. the env file is mounted as a volume from secret
     load_dotenv(secret_mounted_env)
     logging.info(f"Loading environment variables from {secret_mounted_env}")
 else:
