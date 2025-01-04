@@ -1,6 +1,6 @@
 substitutions:
-  _REGION: "${_REGION}"
-  _RUNTIME: "${_RUNTIME}"
+  _REGION: "us-central1"
+  _RUNTIME: "python312"
   _IMAGE_NAME: "edgar-explore_r"
   _DATASET_ID: "edgar2"
   _DEBUG: "0"
