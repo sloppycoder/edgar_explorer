@@ -24,6 +24,7 @@ steps:
       - '--port=8000'
       - '--update-secrets=GOOGLE_APPLICATION_CREDENTIALS_JSON=edgar-ui-user-key:latest'
       - '--update-secrets=/secrets/app_config.env=edgar-ui-config:latest'
+      - '--set-env-vars=DATASET_ID=edgar2,DEBUG=0'
 
 images:
   - 'gcr.io/$PROJECT_ID/edgar-explorer'
