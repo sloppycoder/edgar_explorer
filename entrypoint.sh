@@ -2,8 +2,6 @@
 
 cd "$(dirname "$0")"
 
-cat /secrets/app_config.env
-
 python manage.py collectstatic --no-input > /dev/null
 python manage.py migrate > /dev/null
 python manage.py initapp

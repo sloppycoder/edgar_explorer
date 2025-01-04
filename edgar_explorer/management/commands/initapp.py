@@ -21,7 +21,7 @@ class Command(BaseCommand):
             return
         try:
             user.objects.create_superuser(username, "admin@@company.com", password)
-            print(f"{username} user created")
+            print(f"{username} user created with password {password}")
         except IntegrityError as e:
             print(f"Can't create user {username}, {e}")
 
