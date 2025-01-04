@@ -14,13 +14,13 @@ deprecated==1.2.15
     # via opentelemetry-api
 django==5.1.4
     # via
-    #   gui (pyproject.toml)
+    #   edgar-explorer (pyproject.toml)
     #   django-allauth
     #   django-tables2
 django-allauth==65.3.1
-    # via gui (pyproject.toml)
+    # via edgar-explorer (pyproject.toml)
 django-tables2==2.7.5
-    # via gui (pyproject.toml)
+    # via edgar-explorer (pyproject.toml)
 google-api-core==2.24.0
     # via
     #   google-cloud-appengine-logging
@@ -39,13 +39,13 @@ google-cloud-appengine-logging==1.5.0
 google-cloud-audit-log==0.3.0
     # via google-cloud-logging
 google-cloud-bigquery==3.27.0
-    # via gui (pyproject.toml)
+    # via edgar-explorer (pyproject.toml)
 google-cloud-core==2.4.1
     # via
     #   google-cloud-bigquery
     #   google-cloud-logging
 google-cloud-logging==3.11.3
-    # via gui (pyproject.toml)
+    # via edgar-explorer (pyproject.toml)
 google-crc32c==1.6.0
     # via google-resumable-media
 google-resumable-media==2.7.2
@@ -67,7 +67,7 @@ grpcio==1.68.1
 grpcio-status==1.68.1
     # via google-api-core
 gunicorn==23.0.0
-    # via gui (pyproject.toml)
+    # via edgar-explorer (pyproject.toml)
 idna==3.10
     # via requests
 importlib-metadata==8.5.0
@@ -102,7 +102,7 @@ pyasn1-modules==0.4.1
 python-dateutil==2.9.0.post0
     # via google-cloud-bigquery
 python-dotenv==1.0.1
-    # via gui (pyproject.toml)
+    # via edgar-explorer (pyproject.toml)
 requests==2.32.3
     # via
     #   google-api-core
@@ -116,7 +116,7 @@ sqlparse==0.5.3
 urllib3==2.3.0
     # via requests
 whitenoise==6.8.2
-    # via gui (pyproject.toml)
+    # via edgar-explorer (pyproject.toml)
 wrapt==1.17.0
     # via deprecated
 zipp==3.21.0
