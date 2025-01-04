@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-if Path.is_file("/secrets/app_config.env"):
+if os.path.is_file("/secrets/app_config.env"):
     # running in Cloud Run. the env file is mounted as a volume from secret
     load_dotenv("/secrets/app_config.env")
     logging.info("Loading environment variables from /secrets/app_config.env")
