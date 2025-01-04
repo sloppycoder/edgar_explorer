@@ -20,5 +20,9 @@ gcloud builds triggers create github \
     --branch-pattern="^develop$" \
     --build-config="cloudbuild.yaml"
 
+# check the URL of the service
+gcloud run services describe edgar-explorer --region us-central1 --format json | jq -r ".status.url"
+
+# point your browser to the above URL
 
 ```
