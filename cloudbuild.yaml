@@ -2,44 +2,22 @@ options:
   logging: CLOUD_LOGGING_ONLY
 
 steps:
-  # Step 1: Generate a tag in the format "develop-timestamp"
-  - name: 'ubuntu'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        TAG="develop-$(date +%Y%m%d%H%M%S)"
-        echo "Generated tag: $TAG"
-        echo "TAG=$TAG" >> /workspace/env.properties
-
-  # Step 2: Build the Docker image with the generated tag
+  # Step 1: Build the Docker image
   - name: 'gcr.io/cloud-builders/docker'
-    env:
-      - '$(cat /workspace/env.properties)'
-    args:
-      - 'build'
-      - '-t'
-      - 'gcr.io/$PROJECT_ID/edgar-explorer:$TAG'
-      - '.'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/edgar-explorer', '.']
 
-  # Step 3: Push the Docker image to Google Container Registry (GCR)
+  # Step 2: Push the Docker image to Google Container Registry (GCR)
   - name: 'gcr.io/cloud-builders/docker'
-    env:
-      - '$(cat /workspace/env.properties)'
-    args:
-      - 'push'
-      - 'gcr.io/$PROJECT_ID/edgar-explorer:$TAG'
+    args: ['push', 'gcr.io/$PROJECT_ID/edgar-explorer']
 
-  # Step 4: Deploy to Cloud Run with the generated tag
+  # Step 3: Deploy to Cloud Run with secrets and environment variables
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
-    env:
-      - '$(cat /workspace/env.properties)'
     args:
       - 'run'
       - 'deploy'
       - 'edgar-explorer'
-      - '--image=gcr.io/$PROJECT_ID/edgar-explorer:$TAG'
+      - '--image=gcr.io/$PROJECT_ID/edgar-explorer'
       - '--region=us-central1'
       - '--platform=managed'
       - '--allow-unauthenticated'
@@ -48,4 +26,4 @@ steps:
       - '--update-secrets=/secrets/app_config.env=edgar-ui-config:latest'
 
 images:
-  - 'gcr.io/$PROJECT_ID/edgar-explorer:$TAG'
+  - 'gcr.io/$PROJECT_ID/edgar-explorer'
