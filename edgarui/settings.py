@@ -1,3 +1,4 @@
+import logging
 import os
 from pathlib import Path
 from dotenv import load_dotenv
@@ -5,7 +6,12 @@ from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv()
+if Path.is_file("/secrets/app_config.env"):
+    # running in Cloud Run. the env file is mounted as a volume from secret
+    load_dotenv("/secrets/app_config.env")
+    logging.info("Loading environment variables from /secrets/app_config.env")
+else:
+    load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/

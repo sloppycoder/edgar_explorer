@@ -2,12 +2,7 @@
 
 cd "$(dirname "$0")"
 
-if [ -f "/secrets/app_config" ]; then
-    source /secrets/app_config
-    echo "App config loaded"
-else
-    echo "App config not found, use defaults"
-fi
+cat /secrets/app_config.env
 
 python manage.py collectstatic --no-input > /dev/null
 python manage.py migrate > /dev/null
