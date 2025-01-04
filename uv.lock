@@ -181,6 +181,57 @@ wheels = [
 ]
 
 [[package]]
+name = "edgar-explorer"
+version = "1.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "django" },
+    { name = "django-allauth" },
+    { name = "django-tables2" },
+    { name = "google-cloud-bigquery" },
+    { name = "google-cloud-logging" },
+    { name = "gunicorn" },
+    { name = "python-dotenv" },
+    { name = "whitenoise" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "pre-commit" },
+    { name = "pyright" },
+    { name = "pytest" },
+    { name = "pytest-cov" },
+    { name = "pytest-django" },
+    { name = "pytest-dotenv" },
+    { name = "pytest-mock" },
+    { name = "ruff" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "django", specifier = ">=5.1.4" },
+    { name = "django-allauth", specifier = ">=65.3.1" },
+    { name = "django-tables2", specifier = ">=2.7.5" },
+    { name = "google-cloud-bigquery", specifier = ">=3.27.0" },
+    { name = "google-cloud-logging", specifier = ">=3.11.3" },
+    { name = "gunicorn", specifier = ">=23.0.0" },
+    { name = "python-dotenv", specifier = ">=1.0.1" },
+    { name = "whitenoise", specifier = ">=6.8.2" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pre-commit", specifier = ">=4.0.1" },
+    { name = "pyright", specifier = ">=1.1.139" },
+    { name = "pytest", specifier = ">=8.3.0" },
+    { name = "pytest-cov", specifier = ">=6.0" },
+    { name = "pytest-django", specifier = ">=4.9.0" },
+    { name = "pytest-dotenv", specifier = ">=0.5.2" },
+    { name = "pytest-mock", specifier = ">=3.14" },
+    { name = "ruff", specifier = ">=0.8.2" },
+]
+
+[[package]]
 name = "filelock"
 version = "3.16.1"
 source = { registry = "https://pypi.org/simple" }
@@ -398,57 +449,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/57/db/db3911a9009f03b55e60cf13e3e29dfce423c0e501ec976794c7cbbbcd1b/grpcio_status-1.68.1.tar.gz", hash = "sha256:e1378d036c81a1610d7b4c7a146cd663dd13fcc915cf4d7d053929dba5bbb6e1", size = 13667 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/86/1c/59dfc81f27f252bef2cd52c57157bf381cb3738185d3087ac4c9ff3376b0/grpcio_status-1.68.1-py3-none-any.whl", hash = "sha256:66f3d8847f665acfd56221333d66f7ad8927903d87242a482996bdb45e8d28fd", size = 14427 },
-]
-
-[[package]]
-name = "gui"
-version = "1.0.0"
-source = { virtual = "." }
-dependencies = [
-    { name = "django" },
-    { name = "django-allauth" },
-    { name = "django-tables2" },
-    { name = "google-cloud-bigquery" },
-    { name = "google-cloud-logging" },
-    { name = "gunicorn" },
-    { name = "python-dotenv" },
-    { name = "whitenoise" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "pre-commit" },
-    { name = "pyright" },
-    { name = "pytest" },
-    { name = "pytest-cov" },
-    { name = "pytest-django" },
-    { name = "pytest-dotenv" },
-    { name = "pytest-mock" },
-    { name = "ruff" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "django", specifier = ">=5.1.4" },
-    { name = "django-allauth", specifier = ">=65.3.1" },
-    { name = "django-tables2", specifier = ">=2.7.5" },
-    { name = "google-cloud-bigquery", specifier = ">=3.27.0" },
-    { name = "google-cloud-logging", specifier = ">=3.11.3" },
-    { name = "gunicorn", specifier = ">=23.0.0" },
-    { name = "python-dotenv", specifier = ">=1.0.1" },
-    { name = "whitenoise", specifier = ">=6.8.2" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "pre-commit", specifier = ">=4.0.1" },
-    { name = "pyright", specifier = ">=1.1.139" },
-    { name = "pytest", specifier = ">=8.3.0" },
-    { name = "pytest-cov", specifier = ">=6.0" },
-    { name = "pytest-django", specifier = ">=4.9.0" },
-    { name = "pytest-dotenv", specifier = ">=0.5.2" },
-    { name = "pytest-mock", specifier = ">=3.14" },
-    { name = "ruff", specifier = ">=0.8.2" },
 ]
 
 [[package]]
