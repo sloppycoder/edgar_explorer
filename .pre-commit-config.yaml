@@ -26,6 +26,13 @@ repos:
         files: ^pyproject\.toml$
         pass_filenames: false
 
+      - id: update-requirements-dev-txt
+        name: ensure requirements-dev.txt is up-to-date
+        entry: bash -c 'uv export --group dev  > requirements-dev.txt && git diff --exit-code requirements-dev.txt > /dev/null'
+        language: system
+        files: ^pyproject\.toml$
+        pass_filenames: false
+
       - id: pyright
         name: pyright
         entry: bash -c 'uv run pyright'
@@ -37,6 +44,6 @@ repos:
     rev: v0.8.2
     hooks:
       - id: ruff
-        args: [ --fix ]
+        args: [--fix]
 
       - id: ruff-format

@@ -74,7 +74,7 @@ class FilingsTable(tables.Table):
             "num_trustees",
             "accession_number",
         )
-        attrs = {"class": "table table-striped"}
+        attrs = {"id": "filings-table", "class": "table table-striped"}
         orderable = False
 
 
