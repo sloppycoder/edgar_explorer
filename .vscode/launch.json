@@ -5,15 +5,25 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "runserver",
+            "name": "Django server",
+            "type": "debugpy",
+            "request": "launch",
+            "args": [
+                "runserver"
+            ],
+            "django": true,
+            "autoStartBrowser": false,
+            "program": "${workspaceFolder}/manage.py"
+        },
+        {
+            "name": "Django command",
             "type": "debugpy",
             "request": "launch",
             "program": "manage.py",
             "console": "integratedTerminal",
             "justMyCode": false,
             "args": [
-                "runserver",
-                "--noreload"
+                "initapp",
             ],
         },
         {
