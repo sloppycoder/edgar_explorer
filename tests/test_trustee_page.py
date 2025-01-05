@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 @pytest.mark.django_db
 def test_trustee_blank_search(authenticated_client):
     client = authenticated_client
-    response = client.get("/?q=vanguard")
+    response = client.get("/")
     assert response.status_code == 200, "Unable to load home page"
 
     soup = BeautifulSoup(response.content, "html.parser")
