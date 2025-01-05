@@ -2,24 +2,28 @@
 import logging
 
 from google.cloud import bigquery
+from google.cloud.bigquery.job import QueryJob
 
 
-def query_to_model(model, query: str) -> int:
+def run_query(query: str) -> QueryJob:
     """
-    Load data from BigQuery into a Django model.
+    Run a query in BigQuery
 
     Args:
-        model (django.db.models.Model): The Django model to load data into.
         query (str): The BigQuery query to execute
+
+    Returns:
+        QueryJob: The query job object
     """
-    # Get the BigQuery client
     with bigquery.Client() as bq_client:
-        job = bq_client.query(query)
-        models = [model.objects.create(**dict(row)) for row in job]
-        logging.info(f"Loaded {len(models)} rows into {model.__name__}")
+        query_job = bq_client.query(query)
+        query_job.result()
+        elapsed_t = query_job.ended - query_job.started
+        logging.debug(f"query -> {query[:200]} took {elapsed_t.total_seconds()} seconds")
+        return query_job
 
 
-def load_filing_entries(dataset_id, **kwargs):
+def load_filing_entries(dataset_id, **kwargs) -> None:
     from .models import Filing
 
     logging.info("Loading data from BigQuery...")
@@ -43,6 +47,8 @@ def load_filing_entries(dataset_id, **kwargs):
         AND res.accession_number = idx.accession_number
         LIMIT 10000
         """
-    logging.info("Calling query_to_model")
-    query_to_model(Filing, query)
-    logging.info("Done query_to_model")
+
+    job = run_query(query)
+    filings = [Filing.objects.create(**dict(row)) for row in job]
+
+    logging.info(f"Loaded {len(filings)} from BigQuery")
