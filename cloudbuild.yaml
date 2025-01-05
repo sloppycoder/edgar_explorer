@@ -28,7 +28,7 @@ steps:
     args:
       - "-c"
       - |
-        pytest -v
+        python -m pytest -v
 
   # Step 3: Build the Docker image
   - name: "gcr.io/cloud-builders/docker"
