@@ -1,19 +1,19 @@
 [project]
-name = "edgar-explorer"
+name = "edgar_explorer"
 version = "1.1.0"
 description = "App that let user example processing result of using LLM to extract trustee information from 485BPOS filings"
 authors = [{ name = "Li Lin", email = "guru.lin@gmail.com" }]
 readme = "README.md"
 requires-python = ">= 3.12"
 dependencies = [
-    "python-dotenv >= 1.0.1",
     "google-cloud-logging>=3.11.3",
     "django>=5.1.4",
     "gunicorn>=23.0.0",
     "whitenoise>=6.8.2",
-    "google-cloud-bigquery>=3.27.0",
     "django-tables2>=2.7.5",
     "django-allauth>=65.3.1",
+    "python-decouple>=3.8",
+    "google-cloud-storage>=2.19.0",
 ]
 [dependency-groups]
 dev = [

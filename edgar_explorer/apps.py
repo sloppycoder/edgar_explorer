@@ -7,5 +7,7 @@ class EdgarExplorerConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "edgar_explorer"
     config = {
-        "dataset_id": os.environ.get("DATASET_ID", "edgar"),
+        "seed_data_url": os.environ.get(
+            "SEED_DATA_URL", "gs://edgar_666/edgar_explorer/seed_data.jsonl.gz"
+        ),
     }

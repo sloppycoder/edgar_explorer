@@ -1,8 +1,13 @@
+import gzip
+import json
+import logging
 import os
+from io import BytesIO
 
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from django.db.utils import IntegrityError
+from google.cloud import storage
 
 
 class Command(BaseCommand):
@@ -27,7 +32,35 @@ class Command(BaseCommand):
 
     def load_initial_data(self):
         from edgar_explorer.apps import EdgarExplorerConfig
-        from edgar_explorer.bq_adapter import load_filing_entries
 
-        dateset_id = EdgarExplorerConfig.config["dataset_id"]
-        load_filing_entries(dateset_id)
+        seed_data_url = EdgarExplorerConfig.config["seed_data_url"]
+        load_filing_entries(seed_data_url)
+
+
+def load_filing_entries(blob_url: str):
+    from edgar_explorer.models import Filing
+
+    bucket_name, blob_path = blob_url.replace("gs://", "").split("/", 1)
+    client = storage.Client()
+    bucket = client.bucket(bucket_name)
+    blob = bucket.blob(blob_path)
+
+    if not blob.exists():
+        print(f"Blob {blob_path} does not exist in bucket {bucket_name}.")
+        return
+
+    compressed_content = blob.download_as_bytes()
+    decompressed_content = gzip.decompress(compressed_content)
+    logging.info(f"Blob {blob_path} downloaded. Processing lines...")
+
+    with BytesIO(decompressed_content) as decompressed_file:
+        n_count = 0
+        for line in decompressed_file:
+            try:
+                row = json.loads(line.decode("utf-8"))
+                Filing.objects.create(**dict(row))
+                n_count += 1
+            except json.JSONDecodeError:
+                continue
+
+        print(f"Loaded {n_count} filings.")
