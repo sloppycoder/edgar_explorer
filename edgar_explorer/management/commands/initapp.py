@@ -58,6 +58,10 @@ def load_filing_entries(blob_url: str):
         for line in decompressed_file:
             try:
                 row = json.loads(line.decode("utf-8"))
+                if "accession_number" not in row:
+                    row["accession_number"] = (
+                        row["filename"].replace(".txt", "").split("/")[-1]
+                    )
                 Filing.objects.create(**dict(row))
                 n_count += 1
             except json.JSONDecodeError:
