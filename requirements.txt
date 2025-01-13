@@ -101,6 +101,8 @@ pyasn1-modules==0.4.1
     # via google-auth
 python-decouple==3.8
     # via edgar-explorer (pyproject.toml)
+python-dotenv==1.0.1
+    # via edgar-explorer (pyproject.toml)
 requests==2.32.3
     # via
     #   google-api-core

@@ -204,6 +204,7 @@ dependencies = [
     { name = "google-cloud-storage" },
     { name = "gunicorn" },
     { name = "python-decouple" },
+    { name = "python-dotenv" },
     { name = "whitenoise" },
 ]
 
@@ -229,6 +230,7 @@ requires-dist = [
     { name = "google-cloud-storage", specifier = ">=2.19.0" },
     { name = "gunicorn", specifier = ">=23.0.0" },
     { name = "python-decouple", specifier = ">=3.8" },
+    { name = "python-dotenv", specifier = ">=1.0.1" },
     { name = "whitenoise", specifier = ">=6.8.2" },
 ]
 
