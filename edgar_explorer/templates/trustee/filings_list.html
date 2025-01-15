@@ -8,7 +8,7 @@
 
 <div class="mb-3">
     <form method="get" action="." class="d-flex">
-        <input type="text" name="q" class="form-control me-2" placeholder="Search...">
+        <input type="text" name="q" class="form-control me-2" placeholder="Search..." value="{{ q|default:'' }}">
         <button type="submit" class="btn btn-primary">Search</button>
     </form>
 </div>
