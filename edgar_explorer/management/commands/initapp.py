@@ -34,10 +34,15 @@ class Command(BaseCommand):
         from edgar_explorer.apps import EdgarExplorerConfig
 
         seed_data_url = EdgarExplorerConfig.config["seed_data_url"]
-        load_filing_entries(seed_data_url)
+        if seed_data_url.startswith("gs://"):
+            load_filing_entries_from_gcs(seed_data_url)
+        elif seed_data_url.startswith("postgresql://"):
+            load_filing_entries_from_pg(seed_data_url)
+        else:
+            print(f"Unsupported seed data URL: {seed_data_url}")
 
 
-def load_filing_entries(blob_url: str):
+def load_filing_entries_from_gcs(blob_url: str):
     from edgar_explorer.models import Filing
 
     bucket_name, blob_path = blob_url.replace("gs://", "").split("/", 1)
@@ -67,4 +72,43 @@ def load_filing_entries(blob_url: str):
             except json.JSONDecodeError:
                 continue
 
-        print(f"Loaded {n_count} filings.")
+        print(f"Loaded {n_count} filings from {blob_url}")
+
+
+def load_filing_entries_from_pg(database_url: str):
+    import psycopg
+    import psycopg.rows
+
+    from edgar_explorer.models import Filing
+
+    query = """
+        SELECT DISTINCT
+            idx.cik,
+            company_name,
+            form_type,
+            TO_CHAR(date_filed, 'YYYY-MM-DD') as date_filed,
+            idx_filename as filename,
+            idx.accession_number,
+            res.selected_chunks as chunks_used,
+            res.selected_text as relevant_text,
+            res.n_trustee as num_trustees,
+            res.response as trustees_comp
+        FROM master_idx_sample idx
+        LEFT JOIN trustee_comp_results res
+            ON res.cik = idx.cik
+            AND res.accession_number = idx.accession_number
+            AND 'orig225' = ANY(res.tags)
+        WHERE 'orig225' = ANY(idx.tags)
+        LIMIT 10000
+    """
+    try:
+        with psycopg.connect(database_url) as connection:
+            # Create a cursor that fetches rows as dictionaries
+            with connection.cursor(row_factory=psycopg.rows.dict_row) as cursor:
+                cursor.execute(query)
+                for row in cursor:
+                    Filing.objects.create(**row)
+    except psycopg.Error as e:
+        print(f"Database error: {e}")
+        return []
+    print(f"Loaded filings from {database_url}")

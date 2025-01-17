@@ -93,6 +93,8 @@ protobuf==5.29.2
     #   grpc-google-iam-v1
     #   grpcio-status
     #   proto-plus
+psycopg==3.2.4
+    # via edgar-explorer (pyproject.toml)
 pyasn1==0.6.1
     # via
     #   pyasn1-modules
@@ -111,6 +113,8 @@ rsa==4.9
     # via google-auth
 sqlparse==0.5.3
     # via django
+typing-extensions==4.12.2
+    # via psycopg
 urllib3==2.3.0
     # via requests
 whitenoise==6.8.2

@@ -27,6 +27,12 @@
             var modalData = link.getAttribute('data-info');
 
             try {
+                if (modalData.startsWith("```json")) {
+                    modalData = modalData.replace("```json", "");
+                }
+                if (modalData.includes("```")) {
+                    modalData = modalData.replace("```", "");
+                }
                 // Parse the JSON string into an object
                 var parsedData = JSON.parse(modalData);
 
