@@ -18,3 +18,4 @@ class Filing(models.Model):
     trustees_comp = models.CharField(
         max_length=4096, verbose_name="Trustees Compensation", null=True
     )
+    batch_id = models.CharField(max_length=20, verbose_name="Batch ID", null=True)
