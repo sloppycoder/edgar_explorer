@@ -4,6 +4,7 @@ substitutions:
   _IMAGE_NAME: "edgar-explorer"
   _SEED_DATA_URL: "gs://edgar_666/edgar_explorer/seed_data.jsonl.gz"
   _DEBUG: "0"
+  _SERVICE_ACCOUNT: "edgar-dev@edgar-ai.iam.gserviceaccount.com"
   _SERVICE_ACCOUNT_CREDENTIAL_SECRET: "edgar-ui-user-key"
   _APP_CONFIG_SECRET: "edgar-ui-config"
 
@@ -42,6 +43,8 @@ steps:
       - "--platform=managed"
       - "--allow-unauthenticated"
       - "--port=8000"
+      - "--service-account"
+      - "${_SERVICE_ACCOUNT}"
       - "--update-secrets=GOOGLE_APPLICATION_CREDENTIALS_JSON=${_SERVICE_ACCOUNT_CREDENTIAL_SECRET}:latest"
       - "--update-secrets=/secrets/app_config.env=${_APP_CONFIG_SECRET}:latest"
       - "--set-env-vars=SEED_DATA_URL=${_SEED_DATA_URL},DEBUG=${_DEBUG}"
