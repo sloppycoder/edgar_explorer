@@ -76,7 +76,7 @@ class FilingsTable(tables.Table):
 class FilingsListView(LoginRequiredMixin, SingleTableView):
     model = Filing
     table_class = FilingsTable
-    template_name = "trustee/filings_list.html"
+    template_name = "extraction/filings_list.html"
     paginate_by = PAGE_SIZE
 
     def get_queryset(self):
