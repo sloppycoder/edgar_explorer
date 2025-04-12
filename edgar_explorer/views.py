@@ -134,9 +134,20 @@ def load_new_data(request):
         batch_ids_list = [
             batch_id.strip() for batch_id in batch_ids.split(",") if batch_id.strip()
         ]
+
         if not batch_ids_list:
             messages.error(request, "Invalid Batch IDs provided.")
             return redirect("load_new")
+
+        clear_all = request.POST.get("clear_all", "off") == "on"
+        if clear_all:
+            try:
+                Filing.objects.all().delete()
+            except Exception as e:
+                messages.error(request, f"Error clearing data: {str(e)}")
+                return redirect("load_new")
+        else:
+            Filing.objects.filter(batch_id__in=batch_ids).delete()
 
         # Call the load_filing_entries function to process the batch IDs
         try:

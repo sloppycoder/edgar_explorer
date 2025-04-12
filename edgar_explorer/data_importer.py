@@ -12,9 +12,6 @@ def load_filing_entries(batch_ids: list[str]) -> int:
 
     logging.info(f"Loading filings from {table} for batch IDs: {batch_ids}")
 
-    # Delete existing records in the Filing model
-    Filing.objects.filter(batch_id__in=batch_ids).delete()
-
     # query records
     client = bigquery.Client()
     query = f"SELECT * FROM `{table}` WHERE batch_id IN UNNEST(@batch_ids) LIMIT 5000"
@@ -40,7 +37,7 @@ def load_filing_entries(batch_ids: list[str]) -> int:
 
         Filing.objects.create(
             cik=row["cik"],
-            company_name="Some Company",
+            company_name=row["company_name"],
             form_type="485BPOS",
             date_filed=row["date_filed"],
             accession_number=row["accession_number"],

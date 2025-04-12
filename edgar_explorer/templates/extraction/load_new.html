@@ -11,6 +11,10 @@
         <label for="batch_ids" class="form-label">Batch IDs (comma-separated)</label>
         <input type="text" name="batch_ids" id="batch_ids" class="form-control" placeholder="e.g., 123,456,789">
     </div>
+    <div class="form-check mb-3">
+        <input type="checkbox" name="clear_all" id="clear_all" class="form-check-input" checked>
+        <label for="clear_all" class="form-check-label">Clear All Data</label>
+    </div>
     <button type="submit" class="btn btn-primary">Load Data</button>
 </form>
 {% endblock %}
