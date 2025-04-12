@@ -26,11 +26,11 @@ class FilingsTable(tables.Table):
     #         return value[:20] + "..." if len(value) > 20 else value
     #     return "N/A"
 
-    def render_num_trustees(self, value, record):
+    def render_num_entities(self, value, record):
         return format_html(
             '<a href="#" data-bs-toggle="modal"  data-type="trustee"'
             + f'data-bs-target="#genericModal" data-info="{{}}">{value}</a>',
-            record.trustees_comp,
+            record.info,
         )
 
     def render_chunks_used(self, value, record):
@@ -46,18 +46,13 @@ class FilingsTable(tables.Table):
             data,
         )
 
-    # <a href="#" data-bs-toggle="modal" data-bs-target="#genericModal"
-    # data-type="trustee" data-info='{"trustees": [...], "notes": "Trustee notes here."}'>
-    # 1</a>
-
     def render_accession_number(self, value, record):
         # navigate to the SEC page for the filing
         # filename: edgar/data/105563/0001683863-24-001950.txt
         # URL path edgar/data/105563/000168386324001950/0001683863-24-001950-index.html
         # this logic may not work for older filings, e.g. pre 2004
-        parts = record.filename.replace(".txt", "-index.html").split("/")
-        parts.insert(len(parts) - 1, value.replace("-", ""))
-        path = "/".join(parts)
+        sn = record.accession_number
+        path = f"edgar/data/{record.cik}/{sn.replace("-","")}/{sn}-index.html"
         return format_html(
             f'<a href="https://www.sec.gov/Archives/{path}" target="_blank">{value}</a>',
             value,
@@ -71,7 +66,7 @@ class FilingsTable(tables.Table):
             "company_name",
             "date_filed",
             "chunks_used",
-            "num_trustees",
+            "num_entities",
             "accession_number",
         )
         attrs = {"id": "filings-table", "class": "table table-striped"}
