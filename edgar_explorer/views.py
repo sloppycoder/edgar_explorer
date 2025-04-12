@@ -30,8 +30,14 @@ class FilingsTable(tables.Table):
     #     return "N/A"
 
     def render_num_entities(self, value, record):
+        if record.info_type == "trustee_comp":
+            data_type = "trustee"
+        else:
+            data_type = "fundmgr"
+
         return format_html(
-            '<a href="#" data-bs-toggle="modal"  data-type="trustee"'
+            '<a href="#" data-bs-toggle="modal"'
+            + f'data-type="{data_type}"'
             + f'data-bs-target="#genericModal" data-info="{{}}">{value}</a>',
             record.info,
         )
