@@ -13,6 +13,10 @@
     </form>
 </div>
 
+<div class="mb-3">
+    <a href="{% url 'load_new' %}" class="btn btn-secondary">Load New Data</a>
+</div>
+
 {% render_table table %}
 
 {% include "extraction/entity_modal.html" %}

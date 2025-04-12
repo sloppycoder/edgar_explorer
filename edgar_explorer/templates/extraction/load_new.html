@@ -1,0 +1,16 @@
+{% extends "common/base.html" %}
+
+{% block title %}Load New Data{% endblock %}
+
+{% block content %}
+<h2>Load New Data</h2>
+
+<form method="post" action="{% url 'load_new' %}" class="mb-3">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="batch_ids" class="form-label">Batch IDs (comma-separated)</label>
+        <input type="text" name="batch_ids" id="batch_ids" class="form-control" placeholder="e.g., 123,456,789">
+    </div>
+    <button type="submit" class="btn btn-primary">Load Data</button>
+</form>
+{% endblock %}

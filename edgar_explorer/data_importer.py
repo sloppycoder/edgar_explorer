@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 
 from google.cloud import bigquery
@@ -8,9 +9,15 @@ from .models import Filing
 
 def load_filing_entries(batch_ids: list[str]) -> int:
     table = os.environ.get("RESULT_TABLE", "edgar-ai.edgar2.extraction_result")
-    query = f"SELECT * FROM `{table}` WHERE batch_id IN UNNEST(@batch_ids) LIMIT 5000"
 
+    logging.info(f"Loading filings from {table} for batch IDs: {batch_ids}")
+
+    # Delete existing records in the Filing model
+    Filing.objects.filter(batch_id__in=batch_ids).delete()
+
+    # query records
     client = bigquery.Client()
+    query = f"SELECT * FROM `{table}` WHERE batch_id IN UNNEST(@batch_ids) LIMIT 5000"
     job_config = bigquery.QueryJobConfig(
         query_parameters=[bigquery.ArrayQueryParameter("batch_ids", "STRING", batch_ids)]
     )
@@ -45,6 +52,6 @@ def load_filing_entries(batch_ids: list[str]) -> int:
         )
         n_count += 1
 
-    print(f"Loaded {n_count} filings from {table}")
+    logging.info(f"Loaded {n_count} filings from {table}")
 
     return n_count

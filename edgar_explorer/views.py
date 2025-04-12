@@ -1,12 +1,15 @@
 import json
 
 import django_tables2 as tables
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.http import JsonResponse
+from django.shortcuts import redirect, render
 from django.utils.html import format_html
 from django_tables2 import SingleTableView
 
+from .data_importer import load_filing_entries
 from .models import Filing
 
 PAGE_SIZE = 10
@@ -113,3 +116,32 @@ def readiness_check(request):
 
 def health_check(request):
     return JsonResponse({"status": "ok"})
+
+
+def load_new_data(request):
+    if request.method == "POST":
+        batch_ids = request.POST.get("batch_ids", "")
+        if not batch_ids:
+            messages.error(request, "Batch IDs cannot be empty.")
+            return redirect("load_new")
+
+        batch_ids_list = [
+            batch_id.strip() for batch_id in batch_ids.split(",") if batch_id.strip()
+        ]
+        if not batch_ids_list:
+            messages.error(request, "Invalid Batch IDs provided.")
+            return redirect("load_new")
+
+        # Call the load_filing_entries function to process the batch IDs
+        try:
+            n_loaded = load_filing_entries(batch_ids_list)
+            messages.success(
+                request,
+                f"Successfully loaded {n_loaded} entries for Batch IDs: {', '.join(batch_ids_list)}",  # noqa E501
+            )
+        except Exception as e:
+            messages.error(request, f"Error loading data: {str(e)}")
+
+        return redirect("listing")
+
+    return render(request, "extraction/load_new.html")
