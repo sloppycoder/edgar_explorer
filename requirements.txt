@@ -24,6 +24,7 @@ django-tables2==2.7.5
 google-api-core==2.24.0
     # via
     #   google-cloud-appengine-logging
+    #   google-cloud-bigquery
     #   google-cloud-core
     #   google-cloud-logging
     #   google-cloud-storage
@@ -31,6 +32,7 @@ google-auth==2.37.0
     # via
     #   google-api-core
     #   google-cloud-appengine-logging
+    #   google-cloud-bigquery
     #   google-cloud-core
     #   google-cloud-logging
     #   google-cloud-storage
@@ -38,8 +40,11 @@ google-cloud-appengine-logging==1.5.0
     # via google-cloud-logging
 google-cloud-audit-log==0.3.0
     # via google-cloud-logging
+google-cloud-bigquery==3.31.0
+    # via edgar-explorer (pyproject.toml)
 google-cloud-core==2.4.1
     # via
+    #   google-cloud-bigquery
     #   google-cloud-logging
     #   google-cloud-storage
 google-cloud-logging==3.11.3
@@ -51,7 +56,9 @@ google-crc32c==1.6.0
     #   google-cloud-storage
     #   google-resumable-media
 google-resumable-media==2.7.2
-    # via google-cloud-storage
+    # via
+    #   google-cloud-bigquery
+    #   google-cloud-storage
 googleapis-common-protos==1.66.0
     # via
     #   google-api-core
@@ -77,7 +84,9 @@ importlib-metadata==8.5.0
 opentelemetry-api==1.29.0
     # via google-cloud-logging
 packaging==24.2
-    # via gunicorn
+    # via
+    #   google-cloud-bigquery
+    #   gunicorn
 proto-plus==1.25.0
     # via
     #   google-api-core
@@ -99,6 +108,8 @@ pyasn1==0.6.1
     #   rsa
 pyasn1-modules==0.4.1
     # via google-auth
+python-dateutil==2.9.0.post0
+    # via google-cloud-bigquery
 python-decouple==3.8
     # via edgar-explorer (pyproject.toml)
 python-dotenv==1.0.1
@@ -106,9 +117,12 @@ python-dotenv==1.0.1
 requests==2.32.3
     # via
     #   google-api-core
+    #   google-cloud-bigquery
     #   google-cloud-storage
 rsa==4.9
     # via google-auth
+six==1.17.0
+    # via python-dateutil
 sqlparse==0.5.3
     # via django
 urllib3==2.3.0
