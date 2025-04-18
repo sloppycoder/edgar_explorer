@@ -14,7 +14,7 @@ def load_filing_entries(batch_ids: list[str]) -> int:
 
     # query records
     client = bigquery.Client()
-    query = f"SELECT * FROM `{table}` WHERE batch_id IN UNNEST(@batch_ids) LIMIT 5000"
+    query = f"SELECT DISTINCT * FROM `{table}` WHERE batch_id IN UNNEST(@batch_ids) LIMIT 5000"  # noqa E501
     job_config = bigquery.QueryJobConfig(
         query_parameters=[bigquery.ArrayQueryParameter("batch_ids", "STRING", batch_ids)]
     )
