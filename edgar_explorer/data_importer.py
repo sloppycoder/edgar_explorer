@@ -24,8 +24,8 @@ def load_filing_entries(batch_ids: list[str]) -> int:
     query_job = client.query(query, job_config=job_config)
 
     n_count = 0
-    num_entities = 0
     for row in query_job:
+        num_entities = 0
         try:
             info = json.loads(row["response"])
             if row["extraction_type"] == "trustee_comp":
