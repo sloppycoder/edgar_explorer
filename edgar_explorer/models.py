@@ -5,6 +5,12 @@ class Filing(models.Model):
     class Meta:
         verbose_name = "SEC Filing in Master Index"
         verbose_name_plural = "SEC Filings in Master Index"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["cik", "accession_number", "batch_id"],
+                name="unique_filing_constraint",
+            )
+        ]
 
     cik = models.CharField(max_length=10, verbose_name="CIK")
     company_name = models.CharField(max_length=150, verbose_name="Company Name")

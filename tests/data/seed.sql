@@ -252,40 +252,4 @@ VALUES(
         '20250328130753-wdm',
         'trustee'
     );
-INSERT INTO edgar_explorer_filing (
-        id,
-        cik,
-        company_name,
-        form_type,
-        date_filed,
-        accession_number,
-        chunks_used,
-        num_entities,
-        info,
-        relevant_text,
-        batch_id,
-        info_type
-    )
-VALUES(
-        8,
-        '1217286',
-        'JPMorgan Trust I',
-        '',
-        '2009-10-28',
-        '0001145443-09-002631',
-        '[1010]',
-        0,
-        replace(
-            '\n{\n  "compensation_info_present": false,\n  "trustees": [],\n  "notes": "The provided text snippet is a table header describing the structure of asset information for different types of investment accounts.  It does not contain any compensation information for Trustees or any other individuals."\n}\n',
-            '\n',
-            char(10)
-        ),
-        replace(
-            '|  |  |  | Non-Performance Based Fee Advisory Accounts |\n|  |  |  | Registered Investment\nCompanies |  | Other Pooled Investment\nVehicles |  | Other Accounts |\n|  |  |  | Number of\nAccounts |  | Total Assets\n($millions) |  | Number of\nAccounts |  | Total Assets\n($millions) |  | Number of\nAccounts |  | Total Assets\n\n($millions)',
-            '\n',
-            char(10)
-        ),
-        '20250328130753-wdm',
-        'trustee'
-    );
 COMMIT;

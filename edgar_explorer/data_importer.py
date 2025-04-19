@@ -2,6 +2,7 @@ import json
 import logging
 import os
 
+from django.db import IntegrityError
 from google.cloud import bigquery
 
 from .models import Filing
@@ -14,7 +15,7 @@ def load_filing_entries(batch_ids: list[str]) -> int:
 
     # query records
     client = bigquery.Client()
-    query = f"SELECT DISTINCT * FROM `{table}` WHERE batch_id IN UNNEST(@batch_ids) LIMIT 5000"  # noqa E501
+    query = f"SELECT * FROM `{table}` WHERE batch_id IN UNNEST(@batch_ids) LIMIT 5000"  # noqa E501
     job_config = bigquery.QueryJobConfig(
         query_parameters=[bigquery.ArrayQueryParameter("batch_ids", "STRING", batch_ids)]
     )
@@ -35,19 +36,24 @@ def load_filing_entries(batch_ids: list[str]) -> int:
         except json.JSONDecodeError:
             pass
 
-        Filing.objects.create(
-            cik=row["cik"],
-            company_name=row["company_name"],
-            form_type="485BPOS",
-            date_filed=row["date_filed"],
-            accession_number=row["accession_number"],
-            chunks_used=row["selected_chunks"],
-            relevant_text=row["selected_text"],
-            num_entities=num_entities,
-            info=row["response"],
-            batch_id=row["batch_id"],
-        )
-        n_count += 1
+        try:
+            Filing.objects.create(
+                cik=row["cik"],
+                company_name=row["company_name"],
+                form_type="485BPOS",
+                date_filed=row["date_filed"],
+                accession_number=row["accession_number"],
+                chunks_used=row["selected_chunks"],
+                relevant_text=row["selected_text"],
+                num_entities=num_entities,
+                info=row["response"],
+                batch_id=row["batch_id"],
+            )
+            n_count += 1
+        except IntegrityError:
+            logging.warning(
+                f"Skipping duplicate filing: CIK={row['cik']}, Accession={row['accession_number']}, Batch={row['batch_id']}"  # noqa E501
+            )
 
     logging.info(f"Loaded {n_count} filings from {table}")
 
