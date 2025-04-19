@@ -4,6 +4,8 @@ from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from django.db.utils import IntegrityError
 
+from edgar_explorer.data_importer import load_filings
+
 
 class Command(BaseCommand):
     help = "Initialize the application by create users"
@@ -12,6 +14,7 @@ class Command(BaseCommand):
         admin_username = os.environ.get("ADMIN_USERNAME", "admin")
         admin_password = os.environ.get("ADMIN_PASSWORD", "admin")
         self.create_user(admin_username, admin_password)
+        load_filings()
 
     def create_user(self, username, password):
         user = get_user_model()

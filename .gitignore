@@ -31,3 +31,4 @@ edgar-ai-*.json
 staticfiles/
 *.jsonl
 t
+tmp/

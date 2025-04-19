@@ -9,7 +9,7 @@ from django.shortcuts import redirect, render
 from django.utils.html import format_html
 from django_tables2 import SingleTableView
 
-from .data_importer import load_filing_entries
+from .data_importer import dump_filings, load_filing_entries
 from .models import Filing
 
 PAGE_SIZE = 10
@@ -152,6 +152,8 @@ def load_new_data(request):
         # Call the load_filing_entries function to process the batch IDs
         try:
             n_loaded = load_filing_entries(batch_ids_list)
+            if n_loaded > 0:
+                dump_filings()
             messages.success(
                 request,
                 f"Successfully loaded {n_loaded} entries for Batch IDs: {', '.join(batch_ids_list)}",  # noqa E501
