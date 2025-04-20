@@ -7,6 +7,7 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.utils.html import format_html
+from django.views import View
 from django_tables2 import SingleTableView
 
 from .data_importer import dump_filings, load_filing_entries
@@ -124,8 +125,8 @@ def health_check(request):
     return JsonResponse({"status": "ok"})
 
 
-def load_new_data(request):
-    if request.method == "POST":
+class LoadNewDataView(LoginRequiredMixin, View):
+    def post(self, request):
         batch_ids = request.POST.get("batch_ids", "")
         if not batch_ids:
             messages.error(request, "Batch IDs cannot be empty.")
@@ -149,7 +150,6 @@ def load_new_data(request):
         else:
             Filing.objects.filter(batch_id__in=batch_ids).delete()
 
-        # Call the load_filing_entries function to process the batch IDs
         try:
             n_loaded = load_filing_entries(batch_ids_list)
             if n_loaded > 0:
@@ -163,4 +163,5 @@ def load_new_data(request):
 
         return redirect("listing")
 
-    return render(request, "extraction/load_new.html")
+    def get(self, request):
+        return render(request, "extraction/load_new.html")
