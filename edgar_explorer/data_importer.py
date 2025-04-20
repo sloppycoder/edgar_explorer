@@ -6,6 +6,7 @@ import tempfile
 
 from django.db import IntegrityError
 from google.cloud import firestore, storage
+from google.cloud.firestore_v1.base_query import FieldFilter
 
 from .models import Filing
 
@@ -18,7 +19,13 @@ def load_filing_entries(batch_ids: list[str]) -> int:
     # query records
     client = firestore.Client()
     collection_ref = client.collection(collection_name)
-    query = collection_ref.where("batch_id", "in", batch_ids).limit(5000)
+    query = collection_ref.where(
+        filter=FieldFilter(
+            "batch_id",
+            "in",
+            batch_ids,
+        )
+    ).limit(5000)
     docs = query.stream()
 
     n_count = 0
