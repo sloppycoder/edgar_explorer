@@ -27,7 +27,7 @@ def load_filing_entries(batch_ids: list[str]) -> int:
         num_entities = 0
         try:
             info = json.loads(row["response"])
-            if row["extraction_type"] == "trustee_comp":
+            if row["extraction_type"] == "trustee":
                 if info["compensation_info_present"]:
                     num_entities = len(info["trustees"])
             elif row["extraction_type"] == "fundmgr":
@@ -49,6 +49,7 @@ def load_filing_entries(batch_ids: list[str]) -> int:
                 num_entities=num_entities,
                 info=row["response"],
                 batch_id=row["batch_id"],
+                info_type=row["extraction_type"],
             )
             n_count += 1
         except IntegrityError:

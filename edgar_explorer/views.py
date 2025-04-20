@@ -31,7 +31,7 @@ class FilingsTable(tables.Table):
     #     return "N/A"
 
     def render_num_entities(self, value, record):
-        if record.info_type == "trustee_comp":
+        if record.info_type == "trustee":
             data_type = "trustee"
         else:
             data_type = "fundmgr"
