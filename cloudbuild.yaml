@@ -2,7 +2,7 @@ substitutions:
   _REGION: "us-central1"
   _RUNTIME: "python312"
   _IMAGE_NAME: "edgar-explorer"
-  _SEED_DATA_URL: "gs://edgar_666/edgar_explorer/seed_data.jsonl.gz"
+  _EXTRACTION_RESULT_COLLECTION: "extraction_result"
   _DEBUG: "0"
   _SERVICE_ACCOUNT: "edgar-dev@edgar-ai.iam.gserviceaccount.com"
   _SERVICE_ACCOUNT_CREDENTIAL_SECRET: "edgar-ui-user-key"
@@ -47,7 +47,7 @@ steps:
       - "${_SERVICE_ACCOUNT}"
       - "--update-secrets=GOOGLE_APPLICATION_CREDENTIALS_JSON=${_SERVICE_ACCOUNT_CREDENTIAL_SECRET}:latest"
       - "--update-secrets=/secrets/app_config.env=${_APP_CONFIG_SECRET}:latest"
-      - "--set-env-vars=SEED_DATA_URL=${_SEED_DATA_URL},DEBUG=${_DEBUG}"
+      - "--set-env-vars=EXTRACTION_RESULT_COLLECTION=${_EXTRACTION_RESULT_COLLECTION},DEBUG=${_DEBUG}"
 
 images:
   - "gcr.io/$PROJECT_ID/${_IMAGE_NAME}"
