@@ -45,6 +45,8 @@ steps:
       - "--port=8000"
       - "--service-account"
       - "${_SERVICE_ACCOUNT}"
+      - "--cpu=1"
+      - "--memory=1Gi"
       - "--update-secrets=GOOGLE_APPLICATION_CREDENTIALS_JSON=${_SERVICE_ACCOUNT_CREDENTIAL_SECRET}:latest"
       - "--update-secrets=/secrets/app_config.env=${_APP_CONFIG_SECRET}:latest"
       - "--set-env-vars=EXTRACTION_RESULT_COLLECTION=${_EXTRACTION_RESULT_COLLECTION},DEBUG=${_DEBUG}"
