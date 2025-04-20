@@ -5,26 +5,25 @@ import sqlite3
 import tempfile
 
 from django.db import IntegrityError
-from google.cloud import bigquery, storage
+from google.cloud import firestore, storage
 
 from .models import Filing
 
 
 def load_filing_entries(batch_ids: list[str]) -> int:
-    table = os.environ.get("RESULT_TABLE", "edgar-ai.edgar2.extraction_result")
+    collection_name = os.environ.get("EXTRACTION_RESULT_COLLECTION", "extraction_result")
 
-    logging.info(f"Loading filings from {table} for batch IDs: {batch_ids}")
+    logging.info(f"Loading filings from '{collection_name}' for batch IDs: {batch_ids}")
 
     # query records
-    client = bigquery.Client()
-    query = f"SELECT * FROM `{table}` WHERE batch_id IN UNNEST(@batch_ids) LIMIT 5000"  # noqa E501
-    job_config = bigquery.QueryJobConfig(
-        query_parameters=[bigquery.ArrayQueryParameter("batch_ids", "STRING", batch_ids)]
-    )
-    query_job = client.query(query, job_config=job_config)
+    client = firestore.Client()
+    collection_ref = client.collection(collection_name)
+    query = collection_ref.where("batch_id", "in", batch_ids).limit(5000)
+    docs = query.stream()
 
     n_count = 0
-    for row in query_job:
+    for doc in docs:
+        row = doc.to_dict()
         num_entities = 0
         try:
             info = json.loads(row["response"])
@@ -57,7 +56,9 @@ def load_filing_entries(batch_ids: list[str]) -> int:
                 f"Skipping duplicate filing: CIK={row['cik']}, Accession={row['accession_number']}, Batch={row['batch_id']}"  # noqa E501
             )
 
-    logging.info(f"Loaded {n_count} filings from {table}")
+    logging.info(
+        f"Loaded {n_count} filings from Firestore collection '{collection_name}'"
+    )
 
     return n_count
 
