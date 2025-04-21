@@ -15,7 +15,7 @@ dependencies = [
     "python-decouple>=3.8",
     "google-cloud-storage>=2.19.0",
     "python-dotenv>=1.0.1",
-    "google-cloud-firestore>=2.20.2",
+    "google-cloud-bigquery>=3.31.0",
 ]
 [dependency-groups]
 dev = [
