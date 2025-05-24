@@ -98,6 +98,8 @@ class FilingsListView(LoginRequiredMixin, SingleTableView):
         sort_order = ["batch_id", "cik", "-date_filed"]
 
         search_term = self.request.GET.get("q")
+        if search_term:
+            search_term = search_term.strip()
         if not search_term:
             queryset = queryset.all().order_by(*sort_order)[:10000]
         elif search_term.isdigit():
