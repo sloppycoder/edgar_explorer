@@ -99,7 +99,7 @@ class FilingsListView(LoginRequiredMixin, SingleTableView):
 
         search_term = self.request.GET.get("q")
         if not search_term:
-            queryset = queryset.all().order_by(*sort_order)[:1000]
+            queryset = queryset.all().order_by(*sort_order)[:10000]
         elif search_term.isdigit():
             queryset = queryset.filter(
                 Q(cik__contains=search_term),
