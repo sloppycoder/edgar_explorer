@@ -68,10 +68,14 @@ class FilingsTable(tables.Table):
             value,
         )
 
+    def render_batch_id(self, value, record):
+        return value.split("-")[1] if value else ""
+
     class Meta:
         model = Filing
         template_name = "django_tables2/bootstrap5.html"
         fields = (
+            "batch_id",
             "cik",
             "company_name",
             "date_filed",
@@ -91,7 +95,7 @@ class FilingsListView(LoginRequiredMixin, SingleTableView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        sort_order = ["cik", "-date_filed"]
+        sort_order = ["batch_id", "cik", "-date_filed"]
 
         search_term = self.request.GET.get("q")
         if not search_term:
