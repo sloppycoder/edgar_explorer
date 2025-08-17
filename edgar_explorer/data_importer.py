@@ -1,4 +1,3 @@
-import json
 import logging
 import os
 import sqlite3
@@ -25,22 +24,9 @@ def load_filing_entries(batch_ids: list[str]) -> int:
 
     n_count = 0
     for row in query_job:
-        num_entities = 0
-        try:
-            responses = row["responses"]
-            if not responses:
-                continue
-
-            info = json.loads(responses[0])
-            if row["extraction_type"] == "trustee":
-                if info["compensation_info_present"]:
-                    num_entities = len(info["trustees"])
-            elif row["extraction_type"] == "fundmgr":
-                num_entities = len(info["managers"])
-            else:
-                continue
-        except json.JSONDecodeError:
-            pass
+        responses = row["responses"]
+        if not responses:
+            continue
 
         try:
             Filing.objects.create(
@@ -49,10 +35,7 @@ def load_filing_entries(batch_ids: list[str]) -> int:
                 form_type="485BPOS",
                 date_filed=row["date_filed"],
                 accession_number=row["accession_number"],
-                chunks_used=row["selected_chunks"][0],
-                relevant_text=row["selected_texts"][0],
-                num_entities=num_entities,
-                info=row["responses"][0],
+                responses=responses,
                 batch_id=row["batch_id"],
                 info_type=row["extraction_type"],
             )

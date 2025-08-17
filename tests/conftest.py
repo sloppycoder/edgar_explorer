@@ -22,4 +22,4 @@ def seed_database(db):
 
     with open(Path(__file__).parent / "data/seed.sql") as f:
         sql = f.read()
-        django_conn.connection.executescript(sql)
+        django_conn.connection.executescript(sql)  # pyright: ignore
