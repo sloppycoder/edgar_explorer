@@ -145,7 +145,8 @@ jobs:
             --memory=2Gi \
             --timeout=60s \
             --allow-unauthenticated \
-            --update-secrets=/secrets/app_config.env=${APP_CONFIG_SECRET}:latest
+            --port=8000 \
+            --update-secrets=/secrets/app_config.env=${APP_CONFIG_SECRET}:latest \
             --set-env-vars=RESULT_TABLE=${RESULT_TABLE},DEBUG=${DEBUG}"
         env:
           GOOGLE_CLOUD_PROJECT: edgar-ai-dev
