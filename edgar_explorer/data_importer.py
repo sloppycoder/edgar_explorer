@@ -50,7 +50,7 @@ def load_filing_entries(batch_ids: list[str]) -> int:
                 date_filed=row["date_filed"],
                 accession_number=row["accession_number"],
                 chunks_used=row["selected_chunks"][0],
-                relevant_text=row["selected_text"][0],
+                relevant_text=row["selected_texts"][0],
                 num_entities=num_entities,
                 info=row["responses"][0],
                 batch_id=row["batch_id"],
