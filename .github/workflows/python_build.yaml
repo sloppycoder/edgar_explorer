@@ -146,7 +146,7 @@ jobs:
             --memory=2Gi \
             --timeout=60s \
             --allow-unauthenticated \
-            --update-secrets=/secrets/app_config.env=${_APP_CONFIG_SECRET}:latest"
+            --update-secrets=/secrets/app_config.env=${APP_CONFIG_SECRET}:latest"
             --set-env-vars=RESULT_TABLE=${RESULT_TABLE},DEBUG=${DEBUG}"
         env:
           GOOGLE_CLOUD_PROJECT: edgar-ai-dev
@@ -154,6 +154,7 @@ jobs:
           CLOUD_RUN_SERVICE_ACCOUNT: org-account-aidev@edgar-ai-dev.iam.gserviceaccount.com
           DEBUG: "0"
           RESULT_TABLE: "edgar.extraction_result"
+          APP_CONFIG_SECRET: "projects/837667386467/secrets/edgar-ui-config"
 
   clean-up-old-images:
     needs: buildx
