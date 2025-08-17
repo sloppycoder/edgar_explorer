@@ -1,21 +1,3 @@
-# this workflow will be triggered when
-#
-#  1. a pull request is raised
-#  2. a push to 'develop' branch takes place
-#  3. a release tag is created on the repo
-#
-#  whenever the event is trigger, build and test will be performed
-#  a container image will be created and pushed to ghcr.io only when the event trigger is push to develop or tag.
-#
-#  for push to develop branch, develop-YYYYMMDD-HHMISS-SHA7. the tagging should be sortable by chronological order so that
-#  it can be picked up by CD tools, e.g. FluxCD, for updating the deployment automatically
-#
-#  for new tag, the image tag will be same as the repository tag. e.g. v0.1.0
-#
-#  CAVEATS:
-#
-#  does not support copmlete gitflow that uses long running release branches.
-#
 on:
   push:
     branches:
@@ -27,13 +9,13 @@ on:
 
   workflow_dispatch:
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   pytest:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version:
-          - 3.12
 
     steps:
       - uses: actions/checkout@v4
@@ -41,10 +23,11 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v4
         with:
+          version: 0.7.19
           enable-cache: true
 
-      - name: Install Python using uv ${{ matrix.python-version }}
-        run: uv python install ${{ matrix.python-version }}
+      - name: Install Python using uv
+        run: uv python install 3.12
 
       - name: Install dependencies
         run: |
@@ -54,17 +37,34 @@ jobs:
         run: |
           uv run ruff check .
 
+      - name: Type checking
+        run: |
+          uv run pyright
+
       - name: Unit tests
         id: unit_tests
         run: |
-          uv run pytest -v
+          uv run pytest -v -s
+
+          if [[ -f "htmlcov/index.html" ]]; then
+            echo "coverage_report=yes" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload test coverage report to GitHub pages
+        if: steps.unit_tests.outputs.coverage_report == 'yes'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: htmlcov
+        continue-on-error: true
 
   buildx:
     needs: pytest
-    if: false
-    # if: startsWith(github.ref, 'refs/heads/develop') || startsWith(github.ref, 'refs/heads/main')
+    # build images only when if pushed into main or a tag is pushed
+    if: startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/tags/rel-')
     runs-on: ubuntu-latest
-
+    outputs:
+      image_tag: ${{ steps.meta.outputs.tags }}
     steps:
       - uses: actions/checkout@v4
 
@@ -75,14 +75,11 @@ jobs:
           images: ghcr.io/${{ github.repository }}
           tags: |
             type=ref,event=tag
-            type=raw,value=develop-{{date 'YYYYMMDD-HHmmss' tz='Asia/Singapore'}}-{{sha}},enable=${{ github.ref == 'refs/heads/develop' }}
+            type=raw,value=main-{{date 'YYYYMMDD-HHmmss' tz='Asia/Singapore'}}-{{sha}},enable=${{ github.ref == 'refs/heads/main' }}
           flavor: |
             latest=false
           labels: |
             org.opencontainers.image.source https://github.com/{{ github.repository }}
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
 
       - name: Set up docker buildx
         uses: docker/setup-buildx-action@v3
@@ -94,18 +91,71 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push
+      - name: Build and release
         uses: docker/build-push-action@v6
         with:
           # use path context so that .dockerignore will be processed.
           context: .
           provenance: false
-          platforms: "linux/amd64,linux/arm64"
+          platforms: "linux/amd64"
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-  clean-up:
+  cloud-run-deploy:
+    needs: buildx
+    if: startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/tags/rel-')
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v2"
+        with:
+          version: ">= 363.0.0"
+
+      - name: Set up credentials
+        run: |
+          echo "${{ secrets.GCP_DEPLOY_SA_KEY }}" | base64 -d > $HOME/gcloud.json
+
+      # in order to use a container registry outside GCP, google requires setting
+      # up a Google Artifactory Registry remote repository. The command below will
+      # only work after the setup is done.
+      # https://cloud.google.com/run/docs/deploying
+      - name: Deploy to Cloud Run
+        run: |
+          IMAGE_TAG="${{ needs.buildx.outputs.image_tag }}"
+          TAG="${IMAGE_TAG##*:}"
+          echo "TAG with parameter expansion: $TAG"
+
+          gcloud auth activate-service-account --key-file=$HOME/gcloud.json
+          gcloud config set project "$GOOGLE_CLOUD_PROJECT"
+          gcloud config set run/region "$GOOGLE_CLOUD_REGION"
+
+          gcloud run deploy edgar-explorer \
+            --image "us-central1-docker.pkg.dev/edgar-ai-dev/ghcr-io/${{ github.repository }}:$TAG" \
+            --region=${GOOGLE_CLOUD_REGION} \
+            --platform=managed \
+            --service-account=${CLOUD_RUN_SERVICE_ACCOUNT} \
+            --concurrency=80 \
+            --max-instances=2 \
+            --cpu=1 \
+            --memory=2Gi \
+            --timeout=60s \
+            --allow-unauthenticated \
+            --update-secrets=/secrets/app_config.env=${_APP_CONFIG_SECRET}:latest"
+            --set-env-vars=RESULT_TABLE=${RESULT_TABLE},DEBUG=${DEBUG}"
+        env:
+          GOOGLE_CLOUD_PROJECT: edgar-ai-dev
+          GOOGLE_CLOUD_REGION: us-central1
+          CLOUD_RUN_SERVICE_ACCOUNT: org-account-aidev@edgar-ai-dev.iam.gserviceaccount.com
+          DEBUG: "0"
+          RESULT_TABLE: "edgar.extraction_result"
+
+  clean-up-old-images:
     needs: buildx
     runs-on: ubuntu-latest
 
