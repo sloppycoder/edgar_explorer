@@ -23,6 +23,7 @@ class TruncatedTextColumn(tables.Column):
 
 class FilingsTable(tables.Table):
     company_name = TruncatedTextColumn(verbose_name="Company Name")
+    responses = tables.Column(accessor="responses", verbose_name="Responses")
 
     # this somehow doesn't work...
     # def render_company_name(self, value, _):
@@ -30,30 +31,25 @@ class FilingsTable(tables.Table):
     #         return value[:20] + "..." if len(value) > 20 else value
     #     return "N/A"
 
-    def render_num_entities(self, value, record):
+    def render_responses(self, value, record):
+        print(f"DEBUG: render_responses called with value={value}, record.id={record.id}")
+        print(f"DEBUG: record.responses = {record.responses}")
+        print(f"DEBUG: record.info_type = {record.info_type}")
+
         if record.info_type == "trustee":
             data_type = "trustee"
         else:
             data_type = "fundmgr"
 
+        response_count = len(record.responses) if record.responses else 0
+        responses_json = json.dumps(record.responses) if record.responses else "[]"
+        print(f"DEBUG: responses_json = {responses_json}")
+
         return format_html(
             '<a href="#" data-bs-toggle="modal"'
-            + f'data-type="{data_type}"'
-            + f'data-bs-target="#genericModal" data-info="{{}}">{value}</a>',
-            record.info,
-        )
-
-    def render_chunks_used(self, value, record):
-        data = json.dumps(
-            {
-                "chunk_nums": value,
-                "relevant_text": record.relevant_text,
-            }
-        )
-        return format_html(
-            '<a href="#" data-bs-toggle="modal"  data-type="chunk"'
-            + f'data-bs-target="#genericModal" data-info="{{}}">{value}</a>',
-            data,
+            + f' data-type="{data_type}"'
+            + f" data-bs-target=\"#genericModal\" data-info='{{}}'>{response_count}</a>",
+            responses_json,
         )
 
     def render_accession_number(self, value, record):
@@ -79,8 +75,7 @@ class FilingsTable(tables.Table):
             "cik",
             "company_name",
             "date_filed",
-            "chunks_used",
-            "num_entities",
+            "responses",
             "accession_number",
         )
         attrs = {"id": "filings-table", "class": "table table-striped"}
