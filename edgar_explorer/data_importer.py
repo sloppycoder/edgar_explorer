@@ -11,12 +11,12 @@ from .models import Filing
 
 
 def load_filing_entries(batch_ids: list[str]) -> int:
-    table = os.environ.get("RESULT_TABLE", "edgar-ai.edgar.extraction_result")
+    table = os.environ.get("RESULT_TABLE", "edgar.extraction_result")
 
     logging.info(f"Loading filings from {table} for batch IDs: {batch_ids}")
 
     # query records
-    client = bigquery.Client()
+    client = bigquery.Client(project="edgar-ai-dev")
     query = f"SELECT * FROM `{table}` WHERE batch_id IN UNNEST(@batch_ids) LIMIT 5000"  # noqa E501
     job_config = bigquery.QueryJobConfig(
         query_parameters=[bigquery.ArrayQueryParameter("batch_ids", "STRING", batch_ids)]
@@ -27,7 +27,11 @@ def load_filing_entries(batch_ids: list[str]) -> int:
     for row in query_job:
         num_entities = 0
         try:
-            info = json.loads(row["response"])
+            responses = row["responses"]
+            if not responses:
+                continue
+
+            info = json.loads(responses[0])
             if row["extraction_type"] == "trustee":
                 if info["compensation_info_present"]:
                     num_entities = len(info["trustees"])
@@ -45,10 +49,10 @@ def load_filing_entries(batch_ids: list[str]) -> int:
                 form_type="485BPOS",
                 date_filed=row["date_filed"],
                 accession_number=row["accession_number"],
-                chunks_used=row["selected_chunks"],
-                relevant_text=row["selected_text"],
+                chunks_used=row["selected_chunks"][0],
+                relevant_text=row["selected_text"][0],
                 num_entities=num_entities,
-                info=row["response"],
+                info=row["responses"][0],
                 batch_id=row["batch_id"],
                 info_type=row["extraction_type"],
             )
@@ -134,7 +138,7 @@ def _db_file_path():
         return None, None
 
     gcs_path = os.environ.get(
-        "DB_FILE_PATH", "gs://edgar_666/edgar_explorer/last_db.dump"
+        "DB_FILE_PATH", "gs://edgar_666/edgar_explorer/last_db_new.dump"
     )
     if gcs_path.endswith("/"):
         gcs_path = gcs_path[:-1]

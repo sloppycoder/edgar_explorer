@@ -3,9 +3,9 @@ from edgar_explorer.data_importer import load_filing_entries
 from edgar_explorer.models import Filing
 
 
-@pytest.mark.skip(reason="for local use only")
+# @pytest.mark.skip(reason="for local use only")
 def test_load_data_from_bigquery():
-    batch_id = "20250422002102-ynv"
+    batch_id = "20250817183803-kid"
     n_loaded = load_filing_entries([batch_id])
     filings = Filing.objects.filter(batch_id=batch_id)  # pyright: ignore
     assert len(filings) == n_loaded
