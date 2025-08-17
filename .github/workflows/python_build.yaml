@@ -147,7 +147,7 @@ jobs:
             --allow-unauthenticated \
             --port=8000 \
             --update-secrets=/secrets/app_config.env=${APP_CONFIG_SECRET}:latest \
-            --set-env-vars=RESULT_TABLE=${RESULT_TABLE},DEBUG=${DEBUG}"
+            --set-env-vars=RESULT_TABLE=${RESULT_TABLE},DEBUG=${DEBUG}
         env:
           GOOGLE_CLOUD_PROJECT: edgar-ai-dev
           GOOGLE_CLOUD_REGION: us-central1
