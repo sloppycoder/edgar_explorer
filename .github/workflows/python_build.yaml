@@ -129,7 +129,6 @@ jobs:
         run: |
           IMAGE_TAG="${{ needs.buildx.outputs.image_tag }}"
           TAG="${IMAGE_TAG##*:}"
-          echo "TAG with parameter expansion: $TAG"
 
           gcloud auth activate-service-account --key-file=$HOME/gcloud.json
           gcloud config set project "$GOOGLE_CLOUD_PROJECT"
@@ -154,7 +153,7 @@ jobs:
           CLOUD_RUN_SERVICE_ACCOUNT: org-account-aidev@edgar-ai-dev.iam.gserviceaccount.com
           DEBUG: "0"
           RESULT_TABLE: "edgar.extraction_result"
-          APP_CONFIG_SECRET: "projects/837667386467/secrets/edgar-ui-config"
+          APP_CONFIG_SECRET: edgar-ui-config
 
   clean-up-old-images:
     needs: buildx
