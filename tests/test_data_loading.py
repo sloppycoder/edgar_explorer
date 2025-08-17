@@ -3,7 +3,7 @@ from edgar_explorer.data_importer import load_filing_entries
 from edgar_explorer.models import Filing
 
 
-# @pytest.mark.skip(reason="for local use only")
+@pytest.mark.skip(reason="for local use only")
 def test_load_data_from_bigquery():
     # "20250817214706-tws"
     batch_id = "20250817213143-soc"
