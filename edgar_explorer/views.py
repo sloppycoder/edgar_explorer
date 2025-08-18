@@ -14,20 +14,20 @@ from .models import Filing
 PAGE_SIZE = 10
 
 
-class TruncatedTextColumn(tables.Column):
-    def render(self, value):
-        return value[:20] + "..." if len(value) > 20 else value
+# class TruncatedTextColumn(tables.Column):
+#     def render(self, value):
+#         return value[:20] + "..." if len(value) > 20 else value
 
 
 class FilingsTable(tables.Table):
-    company_name = TruncatedTextColumn(verbose_name="Company Name")
+    company_name = tables.Column(accessor="company_name", verbose_name="Company")
     responses = tables.Column(accessor="responses", verbose_name="Responses")
+    info_type = tables.Column(accessor="info_type", verbose_name="Info Type")
 
-    # this somehow doesn't work...
-    # def render_company_name(self, value, _):
-    #     if value:
-    #         return value[:20] + "..." if len(value) > 20 else value
-    #     return "N/A"
+    def render_company_name(self, value, record):
+        if value:
+            return value[:20] + "..." if len(value) > 20 else value
+        return "N/A"
 
     def render_responses(self, value, record):
         response_count = len(record.responses) if record.responses else 0
@@ -63,6 +63,7 @@ class FilingsTable(tables.Table):
             "date_filed",
             "responses",
             "accession_number",
+            "info_type",
         )
         attrs = {"id": "filings-table", "class": "table table-striped"}
         orderable = False
