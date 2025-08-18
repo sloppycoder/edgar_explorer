@@ -35,6 +35,8 @@ def load_filing_entries(batch_ids: list[str]) -> int:
                 form_type="485BPOS",
                 date_filed=row["date_filed"],
                 accession_number=row["accession_number"],
+                chunks=row["selected_chunks"],
+                texts=row["selected_texts"],
                 responses=responses,
                 batch_id=row["batch_id"],
                 info_type=row["extraction_type"],

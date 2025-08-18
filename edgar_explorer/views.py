@@ -1,11 +1,9 @@
-import json
-
 import django_tables2 as tables
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.http import JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.html import format_html
 from django.views import View
 from django_tables2 import SingleTableView
@@ -32,24 +30,12 @@ class FilingsTable(tables.Table):
     #     return "N/A"
 
     def render_responses(self, value, record):
-        print(f"DEBUG: render_responses called with value={value}, record.id={record.id}")
-        print(f"DEBUG: record.responses = {record.responses}")
-        print(f"DEBUG: record.info_type = {record.info_type}")
-
-        if record.info_type == "trustee":
-            data_type = "trustee"
-        else:
-            data_type = "fundmgr"
-
         response_count = len(record.responses) if record.responses else 0
-        responses_json = json.dumps(record.responses) if record.responses else "[]"
-        print(f"DEBUG: responses_json = {responses_json}")
 
         return format_html(
-            '<a href="#" data-bs-toggle="modal"'
-            + f' data-type="{data_type}"'
-            + f" data-bs-target=\"#genericModal\" data-info='{{}}'>{response_count}</a>",
-            responses_json,
+            '<a href="/filing/{}/">{}</a>',
+            record.id,
+            response_count,
         )
 
     def render_accession_number(self, value, record):
@@ -124,6 +110,20 @@ def readiness_check(request):
 
 def health_check(request):
     return JsonResponse({"status": "ok"})
+
+
+class FilingDetailView(LoginRequiredMixin, View):
+    def get(self, request, filing_id):
+        filing = get_object_or_404(Filing, id=filing_id)
+
+        context = {
+            "filing": filing,
+            "chunks": filing.chunks or [],
+            "texts": filing.texts or [],
+            "responses": filing.responses or [],
+        }
+
+        return render(request, "extraction/filing_detail.html", context)
 
 
 class LoadNewDataView(LoginRequiredMixin, View):

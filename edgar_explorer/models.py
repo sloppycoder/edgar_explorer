@@ -17,6 +17,8 @@ class Filing(models.Model):
     form_type = models.CharField(max_length=20, verbose_name="Form Type")
     date_filed = models.CharField(max_length=10, verbose_name="Date Filed")
     accession_number = models.CharField(max_length=20, verbose_name="Accession Number")
+    chunks = models.JSONField(default=list, verbose_name="Chunk Numbers", null=True)
+    texts = models.JSONField(default=list, verbose_name="Chunk Texts", null=True)
     responses = models.JSONField(default=list, verbose_name="Responses", null=True)
     batch_id = models.CharField(max_length=20, verbose_name="Batch ID", null=True)
     info_type = models.CharField(
