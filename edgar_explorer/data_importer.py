@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import sqlite3
@@ -28,6 +29,11 @@ def load_filing_entries(batch_ids: list[str]) -> int:
         if not responses:
             continue
 
+        annotated_texts = []
+        for i, pos_str in enumerate(row["citation_positions"]):
+            citation_pos = json.loads(pos_str)
+            annotated_texts.append(_annotate_text(row["selected_texts"][i], citation_pos))
+
         try:
             Filing.objects.create(
                 cik=row["cik"],
@@ -36,10 +42,11 @@ def load_filing_entries(batch_ids: list[str]) -> int:
                 date_filed=row["date_filed"],
                 accession_number=row["accession_number"],
                 chunks=row["selected_chunks"],
-                texts=row["annotated_texts"],
+                texts=annotated_texts,
                 responses=responses,
                 batch_id=row["batch_id"],
                 info_type=row["extraction_type"],
+                num_citations=len(row["citation_positions"]),
             )
             n_count += 1
         except IntegrityError:
@@ -133,3 +140,32 @@ def _db_file_path():
             "GCS_DB_PATH must be in the format gs://bucket_name/path/to/file"
         )
     return parts[0], parts[1]
+
+
+def _annotate_text(chunk_text: str, citation_pos: list[list[int]]) -> str:
+    """
+    Annotate text by inserting citation marks at specified positions.
+
+    Args:
+        chunk_text: Original text to annotate
+        citation_pos: List of (start, end) tuples indicating citation positions
+
+    Returns:
+        Text with citation marks inserted
+    """
+    if not citation_pos:
+        return chunk_text
+
+    # Sort positions by start index in reverse order to avoid offset issues
+    sorted_positions = sorted(citation_pos, key=lambda x: x[0], reverse=True)
+
+    result = chunk_text
+    for i, (start, end) in enumerate(sorted_positions):
+        # Citation sequence number (reverse order, so adjust)
+        citation_num = len(sorted_positions) - i
+
+        # Insert end mark first, then start mark to avoid offset issues
+        result = result[:end] + f"⸨/{citation_num}⸩ " + result[end:]
+        result = result[:start] + f"⸨{citation_num}⸩ " + result[start:]
+
+    return result

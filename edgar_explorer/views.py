@@ -1,3 +1,6 @@
+import json
+import re
+
 import django_tables2 as tables
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -75,6 +78,30 @@ class FilingsListView(LoginRequiredMixin, SingleTableView):
     template_name = "extraction/filings_list.html"
     paginate_by = PAGE_SIZE
 
+    def _filter_by_responses_count(self, queryset, operator, value):
+        """Filter filings by responses count using comparison operator."""
+        all_filings = list(queryset.all())
+        filtered_filings = []
+
+        for filing in all_filings:
+            responses_count = len(filing.responses) if filing.responses else 0
+
+            if operator == ">" and responses_count > value:
+                filtered_filings.append(filing)
+            elif operator == ">=" and responses_count >= value:
+                filtered_filings.append(filing)
+            elif operator == "<" and responses_count < value:
+                filtered_filings.append(filing)
+            elif operator == "<=" and responses_count <= value:
+                filtered_filings.append(filing)
+            elif operator == "=" and responses_count == value:
+                filtered_filings.append(filing)
+
+        if filtered_filings:
+            filing_ids = [f.id for f in filtered_filings]
+            return queryset.filter(id__in=filing_ids)
+        return queryset.none()
+
     def get_queryset(self):
         queryset = super().get_queryset()
         sort_order = ["batch_id", "cik", "-date_filed"]
@@ -82,22 +109,24 @@ class FilingsListView(LoginRequiredMixin, SingleTableView):
         search_term = self.request.GET.get("q")
         if search_term:
             search_term = search_term.strip()
-        if not search_term:
-            queryset = queryset.all().order_by(*sort_order)[:10000]
-        elif search_term.isdigit():
-            queryset = queryset.filter(
-                Q(cik__contains=search_term),
-            ).order_by(*sort_order)
-        elif len(search_term) == 20:
-            queryset = queryset.filter(
-                Q(accession_number=search_term),
-            ).order_by(*sort_order)
-        else:
-            queryset = queryset.filter(
-                Q(company_name__icontains=search_term),
-            ).order_by(*sort_order)
 
-        return queryset
+        if not search_term:
+            return queryset.all().order_by(*sort_order)[:10000]
+
+        # Check for comparison operators for responses count
+        comparison_match = re.match(r"^([><=]+)(\d+)$", search_term)
+        if comparison_match:
+            operator = comparison_match.group(1)
+            value = int(comparison_match.group(2))
+            queryset = self._filter_by_responses_count(queryset, operator, value)
+        elif search_term.isdigit():
+            queryset = queryset.filter(Q(cik__contains=search_term))
+        elif len(search_term) == 20:
+            queryset = queryset.filter(Q(accession_number=search_term))
+        else:
+            queryset = queryset.filter(Q(company_name__icontains=search_term))
+
+        return queryset.order_by(*sort_order)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -120,8 +149,8 @@ class FilingDetailView(LoginRequiredMixin, View):
         context = {
             "filing": filing,
             "chunks": filing.chunks or [],
-            "texts": filing.texts or [],
-            "responses": filing.responses or [],
+            "texts": json.dumps(filing.texts or []),
+            "responses": json.dumps(filing.responses or []),
         }
 
         return render(request, "extraction/filing_detail.html", context)

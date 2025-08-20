@@ -24,3 +24,4 @@ class Filing(models.Model):
     info_type = models.CharField(
         max_length=16, verbose_name="Information Type", null=True
     )
+    num_citations = models.IntegerField(default=0, verbose_name="Number of Citations")
