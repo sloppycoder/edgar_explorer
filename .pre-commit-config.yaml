@@ -19,10 +19,6 @@ repos:
         name: requirements.txt
         args: [pyproject.toml, -o, requirements.txt]
         files: ^(pyproject\.toml|uv\.lock)$
-      - id: pip-compile
-        name: requirements-dev.txt
-        args: [pyproject.toml, --group, dev, -o, requirements-dev.txt]
-        files: ^(pyproject\.toml|uv\.lock)$
 
   - repo: local
     hooks:
