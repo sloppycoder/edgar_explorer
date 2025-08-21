@@ -112,14 +112,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          # pool is setup by script in edgar-funcs project
+          workload_identity_provider: "projects/837667386467/locations/global/workloadIdentityPools/github-pool/providers/github-provider"
+          service_account: "cloud-run-deploy@edgar-ai-dev.iam.gserviceaccount.com"
+
       - name: "Set up Cloud SDK"
         uses: "google-github-actions/setup-gcloud@v2"
         with:
           version: ">= 363.0.0"
-
-      - name: Set up credentials
-        run: |
-          echo "${{ secrets.GCP_DEPLOY_SA_KEY }}" | base64 -d > $HOME/gcloud.json
 
       # in order to use a container registry outside GCP, google requires setting
       # up a Google Artifactory Registry remote repository. The command below will
@@ -130,7 +133,6 @@ jobs:
           IMAGE_TAG="${{ needs.buildx.outputs.image_tag }}"
           TAG="${IMAGE_TAG##*:}"
 
-          gcloud auth activate-service-account --key-file=$HOME/gcloud.json
           gcloud config set project "$GOOGLE_CLOUD_PROJECT"
           gcloud config set run/region "$GOOGLE_CLOUD_REGION"
 
@@ -138,8 +140,8 @@ jobs:
             --image "us-central1-docker.pkg.dev/edgar-ai-dev/ghcr-io/${{ github.repository }}:$TAG" \
             --region=${GOOGLE_CLOUD_REGION} \
             --platform=managed \
+            --session-affinity \
             --service-account=${CLOUD_RUN_SERVICE_ACCOUNT} \
-            --concurrency=80 \
             --max-instances=2 \
             --cpu=1 \
             --memory=2Gi \
