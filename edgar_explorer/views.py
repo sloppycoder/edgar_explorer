@@ -33,12 +33,10 @@ class FilingsTable(tables.Table):
         return "N/A"
 
     def render_responses(self, value, record):
-        response_count = len(record.responses) if record.responses else 0
-
         return format_html(
             '<a href="/filing/{}/">{}</a>',
             record.id,
-            response_count,
+            record.num_responses,
         )
 
     def render_accession_number(self, value, record):
@@ -80,26 +78,16 @@ class FilingsListView(LoginRequiredMixin, SingleTableView):
 
     def _filter_by_responses_count(self, queryset, operator, value):
         """Filter filings by responses count using comparison operator."""
-        all_filings = list(queryset.all())
-        filtered_filings = []
-
-        for filing in all_filings:
-            responses_count = len(filing.responses) if filing.responses else 0
-
-            if operator == ">" and responses_count > value:
-                filtered_filings.append(filing)
-            elif operator == ">=" and responses_count >= value:
-                filtered_filings.append(filing)
-            elif operator == "<" and responses_count < value:
-                filtered_filings.append(filing)
-            elif operator == "<=" and responses_count <= value:
-                filtered_filings.append(filing)
-            elif operator == "=" and responses_count == value:
-                filtered_filings.append(filing)
-
-        if filtered_filings:
-            filing_ids = [f.id for f in filtered_filings]
-            return queryset.filter(id__in=filing_ids)
+        if operator == ">":
+            return queryset.filter(num_responses__gt=value)
+        elif operator == ">=":
+            return queryset.filter(num_responses__gte=value)
+        elif operator == "<":
+            return queryset.filter(num_responses__lt=value)
+        elif operator == "<=":
+            return queryset.filter(num_responses__lte=value)
+        elif operator == "=":
+            return queryset.filter(num_responses=value)
         return queryset.none()
 
     def get_queryset(self):
