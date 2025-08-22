@@ -30,8 +30,10 @@ def load_filing_entries(batch_ids: list[str]) -> int:
             continue
 
         annotated_texts = []
+        citation_positions = []
         for i, pos_str in enumerate(row["citation_positions"]):
             citation_pos = json.loads(pos_str)
+            citation_positions.append(citation_pos)
             annotated_texts.append(_annotate_text(row["selected_texts"][i], citation_pos))
 
         try:
@@ -46,7 +48,7 @@ def load_filing_entries(batch_ids: list[str]) -> int:
                 responses=responses,
                 batch_id=row["batch_id"],
                 info_type=row["extraction_type"],
-                num_citations=len(row["citation_positions"]),
+                citation_positions=citation_positions,
                 num_responses=len(responses),
             )
             n_count += 1

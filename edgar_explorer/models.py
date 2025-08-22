@@ -24,5 +24,7 @@ class Filing(models.Model):
     info_type = models.CharField(
         max_length=16, verbose_name="Information Type", null=True
     )
-    num_citations = models.IntegerField(default=0, verbose_name="Number of Citations")
+    citation_positions = models.JSONField(
+        default=list, verbose_name="Citation Positions", null=True
+    )
     num_responses = models.IntegerField(default=0, verbose_name="Number of Responses")

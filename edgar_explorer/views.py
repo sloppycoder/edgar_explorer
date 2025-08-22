@@ -139,6 +139,7 @@ class FilingDetailView(LoginRequiredMixin, View):
             "chunks": filing.chunks or [],
             "texts": json.dumps(filing.texts or []),
             "responses": json.dumps(filing.responses or []),
+            "citation_positions": json.dumps(filing.citation_positions or []),
         }
 
         return render(request, "extraction/filing_detail.html", context)

@@ -52,7 +52,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title mb-0">Source Text <span id="citationCount" class="badge bg-secondary">{{ filing.num_citations }} citations</span></h5>
+                    <h5 class="card-title mb-0">Source Text <span id="citationCount" class="badge bg-secondary">0 citations</span></h5>
                 </div>
                 <div class="card-body">
                     <textarea id="sourceText" class="form-control" rows="30" readonly>
@@ -73,11 +73,12 @@
         // Data from Django template
         const responses = {{ responses|safe }};
         const texts = {{ texts|safe }};
-    const infoType = "{{ filing.info_type }}";
+        const citationPositions = {{ citation_positions|safe }};
+        const infoType = "{{ filing.info_type }}";
 
-    console.log('DEBUG: responses:', responses);
-    console.log('DEBUG: texts:', texts);
-    console.log('DEBUG: infoType:', infoType);
+    //console.log('DEBUG: responses:', responses);
+    //console.log('DEBUG: texts:', texts);
+    //console.log('DEBUG: infoType:', infoType);
 
     function updateCitationCount(count) {
         const citationCountElement = document.getElementById('citationCount');
@@ -100,13 +101,9 @@
             let tableHtml = '';
             let citationCount = 0;
 
-            // Count citations
-            if (parsedData.citations) {
-                if (Array.isArray(parsedData.citations)) {
-                    citationCount = parsedData.citations.length;
-                } else {
-                    citationCount = 1;
-                }
+            // Get citation count from citation positions for this chunk
+            if (citationPositions && responseIndex < citationPositions.length) {
+                citationCount = citationPositions[responseIndex].length;
             }
             updateCitationCount(citationCount);
 
