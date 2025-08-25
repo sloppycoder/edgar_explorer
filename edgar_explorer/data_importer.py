@@ -113,21 +113,22 @@ def load_filings():
     if not blob.exists():
         return
 
-    with tempfile.NamedTemporaryFile(delete=True) as temp_file:
-        logging.info(f"Downloading table dump from gs://{bucket_name}/{blob_path}")
-        blob.download_to_filename(temp_file.name)
+    try:
+        with tempfile.NamedTemporaryFile(delete=True) as temp_file:
+            logging.info(f"Downloading table dump from gs://{bucket_name}/{blob_path}")
+            blob.download_to_filename(temp_file.name)
 
-        logging.info(
-            f"Restoring edgar_explorer_filing table from temporary file {temp_file.name}"
-        )
-        db_path = settings.DATABASES["default"]["NAME"]
-        conn = sqlite3.connect(db_path)
-        with open(temp_file.name, "r") as f:
-            sql_script = f.read()
-        conn.execute("drop table edgar_explorer_filing")
-        conn.executescript(sql_script)
-        conn.close()
-        logging.info("Table restore complete.")
+            logging.info(f"Restoring edgar_explorer_filing table from {temp_file.name}")
+            db_path = settings.DATABASES["default"]["NAME"]
+            conn = sqlite3.connect(db_path)
+            with open(temp_file.name, "r") as f:
+                sql_script = f.read()
+            conn.execute("drop table edgar_explorer_filing")
+            conn.executescript(sql_script)
+            conn.close()
+            logging.info("Table restore complete.")
+    except Exception as e:
+        logging.warning(f"Unable to restore database due to {e}")
 
 
 def _db_file_path():
