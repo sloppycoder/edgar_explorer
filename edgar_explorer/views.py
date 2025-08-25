@@ -23,9 +23,12 @@ PAGE_SIZE = 10
 
 
 class FilingsTable(tables.Table):
+    batch_id = tables.Column(accessor="batch_id", verbose_name="ID")
     company_name = tables.Column(accessor="company_name", verbose_name="Company")
     responses = tables.Column(accessor="responses", verbose_name="Responses")
+    model = tables.Column(accessor="model", verbose_name="Model")
     info_type = tables.Column(accessor="info_type", verbose_name="Info Type")
+    batch_date = tables.Column(accessor="batch_id", verbose_name="Date")
 
     def render_company_name(self, value, record):
         if value:
@@ -54,17 +57,40 @@ class FilingsTable(tables.Table):
     def render_batch_id(self, value, record):
         return value.split("-")[1] if value else ""
 
+    def render_batch_date(self, value, record):
+        if not value:
+            return ""
+        # Extract timestamp part (before the dash)
+        timestamp_part = value.split("-")[0] if "-" in value else value
+        if len(timestamp_part) >= 12:  # YYYYMMDDHHMM format
+            try:
+                month = timestamp_part[4:6]
+                day = timestamp_part[6:8]
+                hour = timestamp_part[8:10]
+                minute = timestamp_part[10:12]
+                return f"{month}/{day} {hour}:{minute}"
+            except (ValueError, IndexError):
+                return value
+        return value
+
+    def render_model(self, value, record):
+        if value and "/" in value:
+            return value.split("/")[-1]
+        return value or ""
+
     class Meta:
         model = Filing
         template_name = "django_tables2/bootstrap5.html"
         fields = (
             "batch_id",
+            "batch_date",
+            "model",
+            "info_type",
             "cik",
             "company_name",
             "date_filed",
             "responses",
             "accession_number",
-            "info_type",
         )
         attrs = {"id": "filings-table", "class": "table table-striped"}
         orderable = False

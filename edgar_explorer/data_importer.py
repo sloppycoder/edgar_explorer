@@ -50,6 +50,7 @@ def load_filing_entries(batch_ids: list[str]) -> int:
                 info_type=row["extraction_type"],
                 citation_positions=citation_positions,
                 num_responses=len(responses),
+                model=row.get("model"),
             )
             n_count += 1
         except IntegrityError:

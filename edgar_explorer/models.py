@@ -28,3 +28,4 @@ class Filing(models.Model):
         default=list, verbose_name="Citation Positions", null=True
     )
     num_responses = models.IntegerField(default=0, verbose_name="Number of Responses")
+    model = models.CharField(max_length=50, verbose_name="Model", null=True, blank=True)

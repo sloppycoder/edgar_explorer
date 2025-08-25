@@ -8,7 +8,8 @@
         <div class="col">
             <h2>Filing Details: {{ filing.company_name }}</h2>
             <p class="text-muted">
-                CIK: {{ filing.cik }} | Form Type: {{ filing.form_type }} | Date Filed: {{ filing.date_filed }} |
+                {% if filing.model %}<span id="model-display">{{ filing.model }}</span> | {% endif %}CIK: {{ filing.cik
+                }} | Form Type: {{ filing.form_type }} | Date Filed: {{ filing.date_filed }} |
                 <a href="https://www.sec.gov/Archives/edgar/data/{{ filing.cik }}/{{ filing.accession_number|cut:'-' }}/{{ filing.accession_number }}-index.html"
                     target="_blank">{{ filing.accession_number }}</a>
             </p>
@@ -52,7 +53,8 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title mb-0">Source Text <span id="citationCount" class="badge bg-secondary">0 citations</span></h5>
+                    <h5 class="card-title mb-0">Source Text <span id="citationCount" class="badge bg-secondary">0
+                            citations</span></h5>
                 </div>
                 <div class="card-body">
                     <textarea id="sourceText" class="form-control" rows="30" readonly>
@@ -70,11 +72,18 @@
         const extractionContent = document.getElementById('extractionContent');
         const sourceText = document.getElementById('sourceText');
 
+        // Format model display to show only part after "/"
+        const modelDisplay = document.getElementById('model-display');
+        if (modelDisplay && modelDisplay.textContent.includes('/')) {
+            const modelParts = modelDisplay.textContent.split('/');
+            modelDisplay.textContent = modelParts[modelParts.length - 1];
+        }
+
         // Data from Django template
         const responses = {{ responses|safe }};
-        const texts = {{ texts|safe }};
-        const citationPositions = {{ citation_positions|safe }};
-        const infoType = "{{ filing.info_type }}";
+    const texts = {{ texts|safe }};
+    const citationPositions = {{ citation_positions | safe }};
+    const infoType = "{{ filing.info_type }}";
 
     //console.log('DEBUG: responses:', responses);
     //console.log('DEBUG: texts:', texts);
