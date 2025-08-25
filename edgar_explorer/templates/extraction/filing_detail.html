@@ -8,8 +8,8 @@
         <div class="col">
             <h2>Filing Details: {{ filing.company_name }}</h2>
             <p class="text-muted">
-                {% if filing.model %}<span id="model-display">{{ filing.model }}</span> | {% endif %}CIK: {{ filing.cik
-                }} | Form Type: {{ filing.form_type }} | Date Filed: {{ filing.date_filed }} |
+                {% if filing.model %}<span id="model-display">{{ filing.model }}</span> | {% endif %}
+                CIK: {{ filing.cik }} | Form Type: {{ filing.form_type }} | Date Filed: {{ filing.date_filed }} |
                 <a href="https://www.sec.gov/Archives/edgar/data/{{ filing.cik }}/{{ filing.accession_number|cut:'-' }}/{{ filing.accession_number }}-index.html"
                     target="_blank">{{ filing.accession_number }}</a>
             </p>
@@ -80,8 +80,8 @@
         }
 
         // Data from Django template
-        const responses = {{ responses|safe }};
-    const texts = {{ texts|safe }};
+        const responses = {{ responses| safe }};
+    const texts = {{ texts| safe }};
     const citationPositions = {{ citation_positions | safe }};
     const infoType = "{{ filing.info_type }}";
 

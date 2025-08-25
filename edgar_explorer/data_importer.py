@@ -29,12 +29,15 @@ def load_filing_entries(batch_ids: list[str]) -> int:
         if not responses:
             continue
 
+        chunks = []
         annotated_texts = []
         citation_positions = []
-        for i, pos_str in enumerate(row["citation_positions"]):
-            citation_pos = json.loads(pos_str)
+        for _, source_json in enumerate(row["sources"]):
+            source = json.loads(source_json)
+            chunks.append(source["ref"])
+            citation_pos = source["citation_positions"]
             citation_positions.append(citation_pos)
-            annotated_texts.append(_annotate_text(row["selected_texts"][i], citation_pos))
+            annotated_texts.append(_annotate_text(source["text"], citation_pos))
 
         try:
             Filing.objects.create(
@@ -43,7 +46,7 @@ def load_filing_entries(batch_ids: list[str]) -> int:
                 form_type="485BPOS",
                 date_filed=row["date_filed"],
                 accession_number=row["accession_number"],
-                chunks=row["selected_chunks"],
+                chunks=chunks,
                 texts=annotated_texts,
                 responses=responses,
                 batch_id=row["batch_id"],
