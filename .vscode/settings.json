@@ -13,5 +13,8 @@
         },
         "editor.defaultFormatter": "charliermarsh.ruff"
     },
+    "[html]": {
+        "editor.formatOnSave": false
+    },
     "debugpy.debugJustMyCode": false,
 }
