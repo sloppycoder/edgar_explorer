@@ -95,8 +95,8 @@ class FilingsTable(tables.Table):
             "cik",
             "company_name",
             "date_filed",
-            "responses",
             "cost",
+            "responses",
             "accession_number",
         )
         attrs = {"id": "filings-table", "class": "table table-striped"}
