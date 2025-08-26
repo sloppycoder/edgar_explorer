@@ -29,6 +29,7 @@ class FilingsTable(tables.Table):
     model = tables.Column(accessor="model", verbose_name="Model")
     info_type = tables.Column(accessor="info_type", verbose_name="Info Type")
     batch_date = tables.Column(accessor="batch_id", verbose_name="Date")
+    cost = tables.Column(accessor="cost", verbose_name="Cost")
 
     def render_company_name(self, value, record):
         if value:
@@ -78,6 +79,11 @@ class FilingsTable(tables.Table):
             return value.split("/")[-1]
         return value or ""
 
+    def render_cost(self, value, record):
+        if value is not None:
+            return f"${value:.2f}"
+        return "$0.00"
+
     class Meta:
         model = Filing
         template_name = "django_tables2/bootstrap5.html"
@@ -90,6 +96,7 @@ class FilingsTable(tables.Table):
             "company_name",
             "date_filed",
             "responses",
+            "cost",
             "accession_number",
         )
         attrs = {"id": "filings-table", "class": "table table-striped"}
