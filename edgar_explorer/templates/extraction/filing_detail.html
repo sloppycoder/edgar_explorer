@@ -166,9 +166,15 @@
                             parsedData.citations.forEach(citation => {
                                 if (typeof citation === 'object') {
                                     const location = citation.location || 'N/A';
-                                    const originalText = citation.start_text || '...' || citation.end_text;
-                                    const truncatedText = originalText.length > 60 ? originalText.substring(0, 60) + '...' : originalText;
-                                    citationsHtml += `<li><strong>${location}:</strong> ${truncatedText}</li>`;
+                                    citationsHtml += `<li>`;
+                                    citationsHtml += `<div><strong>Location:</strong> ${location}</div>`;
+                                    if (citation.start_text) {
+                                        citationsHtml += `<div><strong>Start:</strong> ${citation.start_text}</div>`;
+                                    }
+                                    if (citation.end_text) {
+                                        citationsHtml += `<div><strong>End:</strong> ${citation.end_text}</div>`;
+                                    }
+                                    citationsHtml += `</li>`;
                                 } else {
                                     citationsHtml += `<li>${citation}</li>`;
                                 }
@@ -224,9 +230,15 @@
                             parsedData.citations.forEach(citation => {
                                 if (typeof citation === 'object') {
                                     const location = citation.location || 'N/A';
-                                    const originalText = citation.original_text || '';
-                                    const truncatedText = originalText.length > 60 ? originalText.substring(0, 60) + '...' : originalText;
-                                    citationsHtml += `<li><strong>${location}:</strong> ${truncatedText}</li>`;
+                                    citationsHtml += `<li>`;
+                                    citationsHtml += `<div><strong>Location:</strong> ${location}</div>`;
+                                    if (citation.start_text) {
+                                        citationsHtml += `<div><strong>Start:</strong> ${citation.start_text}</div>`;
+                                    }
+                                    if (citation.end_text) {
+                                        citationsHtml += `<div><strong>End:</strong> ${citation.end_text}</div>`;
+                                    }
+                                    citationsHtml += `</li>`;
                                 } else {
                                     citationsHtml += `<li>${citation}</li>`;
                                 }
