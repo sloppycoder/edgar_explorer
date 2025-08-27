@@ -23,7 +23,7 @@ pytest_junit.xml
 cdk.out
 
 # GCP credential
-edgar-ai-*.json
+*edgar-ai-*.json
 
 # app specifi data and log
 *.db
