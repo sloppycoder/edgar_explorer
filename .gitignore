@@ -32,3 +32,4 @@ staticfiles/
 *.jsonl
 t
 tmp/
+.claude/*local.json
