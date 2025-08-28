@@ -11,6 +11,7 @@ A Django web application that allows users to explore processing results of usin
 - **Deployment**: Google Cloud Run
 - **Frontend**: Django templates with django-tables2
 - **Authentication**: django-allauth
+- **Browser Testing**: Playwright (for automated UI testing)
 
 ## Project Structure
 ```
@@ -96,6 +97,24 @@ uv run pytest tests/test_data_loading.py
 # Run tests with verbose output
 uv run pytest -v
 ```
+
+### Browser Testing with Playwright
+The project includes Playwright for automated browser testing:
+
+```bash
+# Install Playwright
+uv add --group dev playwright
+
+# Install browser binaries
+uv run playwright install
+
+# Run browser tests (create test scripts as needed)
+uv run python your_playwright_test.py
+```
+
+**Note**: For testing purposes, use the following credentials:
+- Username: `admin`
+- Password: `admin`
 
 ### Pre-commit Hooks
 The project uses pre-commit hooks for automated code quality checks:

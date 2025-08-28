@@ -28,6 +28,7 @@ dev = [
     "pyright >= 1.1.139",
     "pytest-django>=4.9.0",
     "beautifulsoup4>=4.12.3",
+    "playwright>=1.54.0",
 ]
 
 [tool.uv]

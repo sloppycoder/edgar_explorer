@@ -37,9 +37,19 @@ class FilingsTable(tables.Table):
         return "N/A"
 
     def render_responses(self, value, record):
+        from urllib.parse import quote, urlencode
+
+        request = getattr(self, "request", None)
+        query_string = ""
+        if request and request.GET:
+            query_string = "?" + urlencode(request.GET)
+
+        back_url = f"/{query_string}" if query_string else "/"
+
         return format_html(
-            '<a href="/filing/{}/">{}</a>',
+            '<a href="/filing/{}/?back_url={}">{}</a>',
             record.id,
+            quote(back_url, safe=""),
             record.num_responses,
         )
 
@@ -152,6 +162,9 @@ class FilingsListView(LoginRequiredMixin, SingleTableView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["q"] = self.request.GET.get("q", "")
+        # Make request available to table for rendering links
+        if "table" in context:
+            context["table"].request = self.request
         return context
 
 
@@ -165,7 +178,14 @@ def health_check(request):
 
 class FilingDetailView(LoginRequiredMixin, View):
     def get(self, request, filing_id):
+        from urllib.parse import unquote
+
         filing = get_object_or_404(Filing, id=filing_id)
+
+        # Get back URL from query parameters, default to listing page
+        back_url = request.GET.get("back_url", "/")
+        if back_url:
+            back_url = unquote(back_url)
 
         context = {
             "filing": filing,
@@ -173,6 +193,7 @@ class FilingDetailView(LoginRequiredMixin, View):
             "texts": json.dumps(filing.texts or []),
             "responses": json.dumps(filing.responses or []),
             "citation_positions": json.dumps(filing.citation_positions or []),
+            "back_url": back_url,
         }
 
         return render(request, "extraction/filing_detail.html", context)
