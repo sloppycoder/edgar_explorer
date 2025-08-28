@@ -213,7 +213,6 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "beautifulsoup4" },
-    { name = "playwright" },
     { name = "pre-commit" },
     { name = "pyright" },
     { name = "pytest" },
@@ -222,6 +221,9 @@ dev = [
     { name = "pytest-dotenv" },
     { name = "pytest-mock" },
     { name = "ruff" },
+]
+local-dev = [
+    { name = "playwright" },
 ]
 
 [package.metadata]
@@ -241,7 +243,6 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "beautifulsoup4", specifier = ">=4.12.3" },
-    { name = "playwright", specifier = ">=1.54.0" },
     { name = "pre-commit", specifier = ">=4.0.1" },
     { name = "pyright", specifier = ">=1.1.139" },
     { name = "pytest", specifier = ">=8.3.0" },
@@ -251,6 +252,7 @@ dev = [
     { name = "pytest-mock", specifier = ">=3.14" },
     { name = "ruff", specifier = ">=0.8.2" },
 ]
+local-dev = [{ name = "playwright", specifier = ">=1.54.0" }]
 
 [[package]]
 name = "filelock"

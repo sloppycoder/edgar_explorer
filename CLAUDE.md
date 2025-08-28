@@ -99,11 +99,11 @@ uv run pytest -v
 ```
 
 ### Browser Testing with Playwright
-The project includes Playwright for automated browser testing:
+Playwright is available for automated browser testing in local development:
 
 ```bash
-# Install Playwright
-uv add --group dev playwright
+# Install Playwright (local development only)
+uv sync --group local-dev
 
 # Install browser binaries
 uv run playwright install
@@ -112,9 +112,11 @@ uv run playwright install
 uv run python your_playwright_test.py
 ```
 
-**Note**: For testing purposes, use the following credentials:
-- Username: `admin`
-- Password: `admin`
+**Note**: 
+- Playwright is in the `local-dev` group to avoid slowing down CI/GitHub Actions
+- For testing purposes, use the following credentials:
+  - Username: `admin`
+  - Password: `admin`
 
 ### Pre-commit Hooks
 The project uses pre-commit hooks for automated code quality checks:
