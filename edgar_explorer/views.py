@@ -154,6 +154,8 @@ class FilingsListView(LoginRequiredMixin, SingleTableView):
             queryset = queryset.filter(Q(cik__contains=search_term))
         elif len(search_term) == 20:
             queryset = queryset.filter(Q(accession_number=search_term))
+        elif len(search_term) == 3 and search_term.isalpha():
+            queryset = queryset.filter(Q(batch_id__endswith=search_term))
         else:
             queryset = queryset.filter(Q(company_name__icontains=search_term))
 
